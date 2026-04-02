@@ -132,6 +132,8 @@ export async function getOrCreateClient(
 
 // src/lib/db.ts
 
+// src/lib/db.ts
+
 export async function getOrders(db: D1Database, status?: string): Promise<Order[]> {
     let query = `
     SELECT o.*, c.first_name, c.last_name, c.email
@@ -142,12 +144,17 @@ export async function getOrders(db: D1Database, status?: string): Promise<Order[
     query += ' ORDER BY o.created_at DESC'
 
     const { results } = await db.prepare(query).bind(...params).all()
+
     return results.map((r: Record<string, unknown>) => ({
         ...(r as unknown as Order),
-        // Use undefined for optional fields to satisfy strict null checks
-        shipping_address: r.shipping_address ? JSON.parse(r.shipping_address as string) : undefined,
-        client: r.email ? { first_name: r.first_name, last_name: r.last_name, email: r.email } : undefined,
-    })) as Order[]
+        // Ensure we use null fallbacks to match the interface expectations
+        shipping_address: r.shipping_address ? JSON.parse(r.shipping_address as string) : null,
+        client: r.email ? {
+            first_name: r.first_name as string,
+            last_name: r.last_name as string,
+            email: r.email as string
+        } : null,
+    })) as unknown as Order[]
 }
 
 export async function getOrderById(db: D1Database, id: number): Promise<Order | null> {
@@ -165,19 +172,19 @@ export async function getOrderById(db: D1Database, id: number): Promise<Order | 
 
     return {
         ...(order as unknown as Order),
-        // Use undefined instead of null to match the Client | undefined type
-        shipping_address: order.shipping_address ? JSON.parse(order.shipping_address as string) : undefined,
+        // shipping_address must be null, not undefined
+        shipping_address: order.shipping_address ? JSON.parse(order.shipping_address as string) : null,
         client: order.email ? {
             id: order.client_id as number,
             first_name: order.first_name as string,
             last_name: order.last_name as string,
             email: order.email as string,
             phone: order.phone as string | null,
-            shipping_address: undefined,
-            notes: undefined,
+            shipping_address: null, // explicitly null
+            notes: null,             // explicitly null
             created_at: '',
             updated_at: ''
-        } : undefined,
+        } : null, // explicitly null
         items: items as OrderItem[],
     }
 }
