@@ -15,14 +15,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
-  params: { id: string } // 'id' is actually the slug
+  params: Promise<{ id: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const ctx = getRequestContext()
-    const env = ctx.env as CloudflareEnv
-    const artwork = await getArtworkBySlug(env.DB, params.id)
+    const { id } = await params
+    const env = getRequestContext().env as CloudflareEnv
+    const artwork = await getArtworkBySlug(env.DB, id)
     if (!artwork) return { title: 'Artwork Not Found' }
     return {
       title: artwork.title,
@@ -34,18 +34,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ArtworkPage({ params }: Props) {
+  const { id } = await params
   let artwork: Awaited<ReturnType<typeof getArtworkBySlug>> = null
   let related: Awaited<ReturnType<typeof getArtworks>> = []
   let r2PublicUrl = ''
 
   try {
-    const ctx = getRequestContext()
-    const env = ctx.env as CloudflareEnv
+    const env = getRequestContext().env as CloudflareEnv
     r2PublicUrl = env.R2_PUBLIC_URL ?? ''
-    artwork = await getArtworkBySlug(env.DB, params.id)
+    artwork = await getArtworkBySlug(env.DB, id)
     if (!artwork) notFound()
 
-    // Hydrate images
     if (artwork.images) {
       artwork.images = artwork.images.map(img => ({
         ...img,
@@ -55,14 +54,15 @@ export default async function ArtworkPage({ params }: Props) {
     artwork.primary_image_url = artwork.images?.find(i => i.is_primary)?.url
       ?? artwork.images?.[0]?.url
 
-    // Related works from same series
     const allInSeries = await getArtworks(env.DB, { series: artwork.series ?? undefined })
     related = allInSeries
       .filter(a => a.id !== artwork!.id)
       .slice(0, 3)
       .map(a => ({
         ...a,
-        primary_image_url: a.images?.[0]?.r2_key ? r2KeyToUrl(r2PublicUrl, a.images[0].r2_key) : undefined,
+        primary_image_url: a.images?.[0]?.r2_key
+          ? r2KeyToUrl(r2PublicUrl, a.images[0].r2_key)
+          : undefined,
       }))
   } catch (e) {
     if ((e as { digest?: string })?.digest?.includes('NEXT_NOT_FOUND')) notFound()
@@ -70,19 +70,19 @@ export default async function ArtworkPage({ params }: Props) {
 
   if (!artwork) notFound()
 
-  const primaryImg = artwork.primary_image_url ?? '/placeholder-artwork.jpg'
+  const primaryImg = artwork.primary_image_url ?? '/placeholder-artwork.svg'
   const additionalImgs = artwork.images?.filter(i => i.url !== primaryImg).slice(0, 3) ?? []
 
   return (
     <>
       <Navbar />
-      <main className="pt-28">
+      <main className="pt-28 bg-parchment">
 
         {/* Breadcrumb */}
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-2 text-xs text-dusk/40 font-body">
-          <Link href="/" className="hover:text-dusk/65 transition-colors">Home</Link>
+          <Link href="/" className="hover:text-dusk/70 transition-colors">Home</Link>
           <span>/</span>
-          <Link href="/gallery" className="hover:text-dusk/65 transition-colors">Gallery</Link>
+          <Link href="/gallery" className="hover:text-dusk/70 transition-colors">Gallery</Link>
           <span>/</span>
           <span className="text-dusk/60 truncate">{artwork.title}</span>
         </div>
@@ -91,9 +91,8 @@ export default async function ArtworkPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-6 py-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
 
-            {/* ── IMAGE PANEL ────────────────────────────────────────── */}
+            {/* ── IMAGE PANEL ─────────────────────────────────── */}
             <div className="space-y-4">
-              {/* Primary image */}
               <div className="relative aspect-[4/5] overflow-hidden bg-vellum border border-whisper shadow-card group">
                 <Image
                   src={primaryImg}
@@ -103,15 +102,15 @@ export default async function ArtworkPage({ params }: Props) {
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
-                {/* Status overlay */}
                 {artwork.status === 'sold' && (
                   <div className="absolute inset-0 bg-parchment/60 flex items-center justify-center">
-                    <span className="font-display text-4xl text-blush/80 tracking-widest uppercase rotate-[-15deg]">Sold</span>
+                    <span className="font-display text-4xl text-dusk/60 tracking-widest uppercase rotate-[-15deg]">
+                      Sold
+                    </span>
                   </div>
                 )}
               </div>
 
-              {/* Additional images */}
               {additionalImgs.length > 0 && (
                 <div className="grid grid-cols-3 gap-3">
                   {additionalImgs.map((img, i) => (
@@ -129,7 +128,7 @@ export default async function ArtworkPage({ params }: Props) {
               )}
             </div>
 
-            {/* ── INFO PANEL ─────────────────────────────────────────── */}
+            {/* ── INFO PANEL ──────────────────────────────────── */}
             <div className="flex flex-col">
 
               {/* Series + status */}
@@ -137,12 +136,13 @@ export default async function ArtworkPage({ params }: Props) {
                 {artwork.series && (
                   <Link
                     href={`/gallery?series=${encodeURIComponent(artwork.series)}`}
-                    className="text-xs text-celestial/70 tracking-widest uppercase hover:text-celestial transition-colors font-body"
+                    className="text-xs text-celestial tracking-widest uppercase hover:text-ink transition-colors font-body"
+                    style={{ color: 'rgba(143,174,200,0.9)' }}
                   >
                     {artwork.series}
                   </Link>
                 )}
-                <span className="text-gold/20">·</span>
+                <span className="text-gold/30">·</span>
                 <span className={`
                   ${artwork.status === 'available' ? 'badge-available' : ''}
                   ${artwork.status === 'sold' ? 'badge-sold' : ''}
@@ -158,7 +158,7 @@ export default async function ArtworkPage({ params }: Props) {
               </h1>
 
               {/* Divider */}
-              <div className="w-16 h-px bg-gold/30 mb-8" />
+              <div className="w-16 h-px mb-8" style={{ background: 'rgba(196,32,64,0.3)' }} />
 
               {/* Metadata grid */}
               <div className="grid grid-cols-2 gap-x-8 gap-y-5 mb-8">
@@ -169,7 +169,7 @@ export default async function ArtworkPage({ params }: Props) {
                   { label: 'Framed', value: 'Gold Float Frame Included' },
                 ].map(field => (
                   <div key={field.label}>
-                    <p className="text-xs text-dusk/45 tracking-[0.2em] uppercase font-body mb-1">
+                    <p className="text-xs text-dusk/50 tracking-[0.2em] uppercase font-body mb-1">
                       {field.label}
                     </p>
                     <p className="font-body text-ink/80">{field.value}</p>
@@ -179,7 +179,7 @@ export default async function ArtworkPage({ params }: Props) {
 
               {/* Description */}
               {artwork.description && (
-                <div className="mb-8 border-l-2 border-gold/20 pl-5">
+                <div className="mb-8 border-l-2 pl-5" style={{ borderColor: 'rgba(196,32,64,0.2)' }}>
                   <p className="font-body text-dusk/65 leading-relaxed italic">
                     {artwork.description}
                   </p>
@@ -189,10 +189,8 @@ export default async function ArtworkPage({ params }: Props) {
               {/* Price */}
               {artwork.status === 'available' && (
                 <div className="mb-6">
-                  <p className="text-xs text-dusk/45 tracking-[0.2em] uppercase font-body mb-1">Price</p>
-                  <p className="font-display text-5xl text-gold">
-                    ${artwork.price.toLocaleString()}
-                  </p>
+                  <p className="text-xs text-dusk/50 tracking-[0.2em] uppercase font-body mb-1">Price</p>
+                  <p className="font-display text-5xl text-gold">${artwork.price.toLocaleString()}</p>
                   <p className="text-xs text-dusk/40 font-body mt-1">
                     Includes certificate of authenticity · Free worldwide shipping
                   </p>
@@ -204,7 +202,7 @@ export default async function ArtworkPage({ params }: Props) {
                 <AddToCartButton artwork={artwork} />
               </div>
 
-              {/* Provenance / inquiry */}
+              {/* Inquiry */}
               <div className="glass-card p-5 text-sm">
                 <p className="font-display text-lg text-gold mb-2">Acquire This Work</p>
                 <p className="text-dusk/60 font-body text-sm mb-3">
@@ -217,12 +215,11 @@ export default async function ArtworkPage({ params }: Props) {
                   Contact the studio →
                 </a>
               </div>
-
             </div>
           </div>
         </div>
 
-        {/* ── RELATED WORKS ──────────────────────────────────────────── */}
+        {/* ── RELATED WORKS ───────────────────────────────────── */}
         {related.length > 0 && (
           <section className="max-w-7xl mx-auto px-6 py-20 border-t border-whisper mt-10">
             <h2 className="font-display text-4xl text-ink mb-10">

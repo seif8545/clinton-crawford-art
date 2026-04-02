@@ -6,10 +6,14 @@ import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getOrderById, updateOrderStatus } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  _: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params
     const env = getRequestContext().env as CloudflareEnv
-    const order = await getOrderById(env.DB, parseInt(params.id))
+    const order = await getOrderById(env.DB, parseInt(id))
     if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     return NextResponse.json({ order })
   } catch {
@@ -17,15 +21,19 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params
     const env = getRequestContext().env as CloudflareEnv
     const { status } = await request.json()
     const validStatuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded']
     if (!validStatuses.includes(status)) {
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
     }
-    await updateOrderStatus(env.DB, parseInt(params.id), status)
+    await updateOrderStatus(env.DB, parseInt(id), status)
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Failed' }, { status: 500 })
