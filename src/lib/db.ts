@@ -163,18 +163,19 @@ export async function getOrderById(db: D1Database, id: number): Promise<Order | 
 
     return {
         ...(order as unknown as Order),
-        shipping_address: order.shipping_address ? JSON.parse(order.shipping_address as string) : undefined,
+        // Map to null if missing, to match the Order type definition
+        shipping_address: order.shipping_address ? JSON.parse(order.shipping_address as string) : null,
         client: order.email ? {
             id: order.client_id as number,
             first_name: order.first_name as string,
             last_name: order.last_name as string,
             email: order.email as string,
             phone: order.phone as string | null,
-            shipping_address: undefined,
-            notes: undefined,
+            shipping_address: null, // Keep as null to match Client type
+            notes: null,             // Keep as null to match Client type
             created_at: '',
             updated_at: ''
-        } : undefined,
+        } : null, // Change this back to null
         items: items as OrderItem[],
     }
 }
