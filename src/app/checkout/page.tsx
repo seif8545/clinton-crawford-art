@@ -76,7 +76,8 @@ export default function CheckoutPage() {
             if (!res.ok) throw new Error('Order failed')
 
             // THE FIX: Explicitly cast the JSON response to bypass the 'unknown' type error
-            const { order_number } = (await res.json()) as { order_number: string }
+            const data = (await res.json()) as { order_number: string }
+            const order_number = data.order_number
 
             clearCart()
             router.push(`/checkout/success?order=${order_number}`)
@@ -104,7 +105,9 @@ export default function CheckoutPage() {
                     {/* Step tabs */}
                     <div className="flex items-center gap-6 mb-10 border-b border-whisper pb-4">
                         {(['info', 'payment'] as const).map((s, i) => (
-                            <button key={s} onClick={() => s === 'payment' && setStep('payment')}
+                            <button key={s}
+                                disabled={loading}
+                                onClick={() => s === 'payment' && setStep('payment')}
                                 className={`font-display text-lg transition-colors ${step === s ? 'text-gold' : 'text-dusk/40'}`}>
                                 {i + 1}. {s === 'info' ? 'Your Details' : 'Payment'}
                             </button>
@@ -167,7 +170,7 @@ export default function CheckoutPage() {
                                     <button onClick={handleSubmit} disabled={loading} className="btn-portal w-full justify-center disabled:opacity-50">
                                         {loading ? 'Processing…' : `Place Order · $${cartTotal.toLocaleString()}`}
                                     </button>
-                                    <button onClick={() => setStep('info')} className="block text-center text-sm text-dusk/40 hover:text-dusk/65 transition-colors w-full font-body">
+                                    <button onClick={() => setStep('info')} disabled={loading} className="block text-center text-sm text-dusk/40 hover:text-dusk/65 transition-colors w-full font-body">
                                         ← Back to details
                                     </button>
                                 </>
