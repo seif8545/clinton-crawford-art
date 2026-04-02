@@ -1,52 +1,43 @@
-// src/app/api/artworks/[id]/route.ts
+// src/app/api/artworks/route.ts
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getRequestContext } from '@cloudflare/next-on-pages'
-import { getArtworkById, updateArtwork, deleteArtwork } from '@/lib/db'
-import { deleteFromR2 } from '@/lib/r2'
-import type { CloudflareEnv } from '@/types'
+import { getArtworks, createArtwork } from '@/lib/db'
+import type { CloudflareEnv, Artwork } from '@/types'
 
-type Ctx = { params: Promise<{ id: string }> }
-
-export async function GET(_: NextRequest, ctx: Ctx) {
+export async function GET(request: NextRequest) {
     try {
-        const { id } = await ctx.params
         const env = getRequestContext().env as CloudflareEnv
-        const artwork = await getArtworkById(env.DB, parseInt(id))
-        if (!artwork) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-        return NextResponse.json({ artwork })
-    } catch {
-        return NextResponse.json({ error: 'Failed' }, { status: 500 })
+        const { searchParams } = new URL(request.url)
+
+        const status = searchParams.get('status')
+        const series = searchParams.get('series')
+
+        const artworks = await getArtworks(env.DB, {
+            status: status || undefined,
+            series: series || undefined
+        })
+
+        return NextResponse.json({ artworks })
+    } catch (error) {
+        console.error('GET Artworks Error:', error)
+        return NextResponse.json({ error: 'Failed to fetch artworks' }, { status: 500 })
     }
 }
 
-export async function PATCH(request: NextRequest, ctx: Ctx) {
+export async function POST(request: NextRequest) {
     try {
-        const { id } = await ctx.params
         const env = getRequestContext().env as CloudflareEnv
-        const body = await request.json()
-        await updateArtwork(env.DB, parseInt(id), body)
-        return NextResponse.json({ success: true })
-    } catch {
-        return NextResponse.json({ error: 'Failed to update' }, { status: 500 })
-    }
-}
 
-export async function DELETE(_: NextRequest, ctx: Ctx) {
-    try {
-        const { id } = await ctx.params
-        const env = getRequestContext().env as CloudflareEnv
-        const artworkId = parseInt(id)
-        const artwork = await getArtworkById(env.DB, artworkId)
-        if (artwork?.images) {
-            for (const img of artwork.images) {
-                await deleteFromR2(env.BUCKET, img.r2_key)
-            }
-        }
-        await deleteArtwork(env.DB, artworkId)
-        return NextResponse.json({ success: true })
-    } catch {
-        return NextResponse.json({ error: 'Failed to delete' }, { status: 500 })
+        // THE FIX: Explicitly cast the body as Partial<Artwork> 
+        // to resolve the 'unknown' type error
+        const body = (await request.json()) as Partial<Artwork>
+
+        const result = await createArtwork(env.DB, body)
+        return NextResponse.json(result)
+    } catch (error) {
+        console.error('POST Artwork Error:', error)
+        return NextResponse.json({ error: 'Failed to create artwork' }, { status: 500 })
     }
 }
