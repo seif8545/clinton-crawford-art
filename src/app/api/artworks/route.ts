@@ -1,49 +1,52 @@
-// src/app/api/artworks/route.ts
+// src/app/api/artworks/[id]/route.ts
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getRequestContext } from '@cloudflare/next-on-pages'
-import { getArtworks, createArtwork } from '@/lib/db'
-import { r2KeyToUrl } from '@/lib/r2'
+import { getArtworkById, updateArtwork, deleteArtwork } from '@/lib/db'
+import { deleteFromR2 } from '@/lib/r2'
 import type { CloudflareEnv } from '@/types'
 
-export async function GET(request: NextRequest) {
-  try {
-    const env = getRequestContext().env as CloudflareEnv
-    const { searchParams } = new URL(request.url)
+type Ctx = { params: Promise<{ id: string }> }
 
-    const artworks = await getArtworks(env.DB, {
-      status: searchParams.get('status') ?? undefined,
-      featured: searchParams.get('featured') === 'true' ? true : undefined,
-      series: searchParams.get('series') ?? undefined,
-    })
-
-    const r2PublicUrl = env.R2_PUBLIC_URL ?? ''
-    const hydrated = artworks.map(a => ({
-      ...a,
-      primary_image_url: a.images?.[0]?.r2_key
-        ? r2KeyToUrl(r2PublicUrl, a.images[0].r2_key)
-        : null,
-    }))
-
-    return NextResponse.json({ artworks: hydrated })
-  } catch (err) {
-    return NextResponse.json({ error: 'Failed to fetch artworks' }, { status: 500 })
-  }
+export async function GET(_: NextRequest, ctx: Ctx) {
+    try {
+        const { id } = await ctx.params
+        const env = getRequestContext().env as CloudflareEnv
+        const artwork = await getArtworkById(env.DB, parseInt(id))
+        if (!artwork) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+        return NextResponse.json({ artwork })
+    } catch {
+        return NextResponse.json({ error: 'Failed' }, { status: 500 })
+    }
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const env = getRequestContext().env as CloudflareEnv
-    const body = await request.json()
-
-    if (!body.title || !body.slug || !body.medium || !body.dimensions || !body.price) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+export async function PATCH(request: NextRequest, ctx: Ctx) {
+    try {
+        const { id } = await ctx.params
+        const env = getRequestContext().env as CloudflareEnv
+        const body = await request.json()
+        await updateArtwork(env.DB, parseInt(id), body)
+        return NextResponse.json({ success: true })
+    } catch {
+        return NextResponse.json({ error: 'Failed to update' }, { status: 500 })
     }
+}
 
-    const { id } = await createArtwork(env.DB, body)
-    return NextResponse.json({ id }, { status: 201 })
-  } catch (err) {
-    return NextResponse.json({ error: 'Failed to create artwork' }, { status: 500 })
-  }
+export async function DELETE(_: NextRequest, ctx: Ctx) {
+    try {
+        const { id } = await ctx.params
+        const env = getRequestContext().env as CloudflareEnv
+        const artworkId = parseInt(id)
+        const artwork = await getArtworkById(env.DB, artworkId)
+        if (artwork?.images) {
+            for (const img of artwork.images) {
+                await deleteFromR2(env.BUCKET, img.r2_key)
+            }
+        }
+        await deleteArtwork(env.DB, artworkId)
+        return NextResponse.json({ success: true })
+    } catch {
+        return NextResponse.json({ error: 'Failed to delete' }, { status: 500 })
+    }
 }

@@ -2,8 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\app"
+    "\\src\\app",
+    "\\src\\app\\api",
+    "\\src\\app\\api\\artworks",
+    "\\src\\app\\api\\orders"
   ],
-  "SelectedNode": "\\src\\app\\globals.css",
+  "SelectedNode": "\\src\\app\\api\\orders\\route.ts",
   "PreviewInSolutionExplorer": false
 }
