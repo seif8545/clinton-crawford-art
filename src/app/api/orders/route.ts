@@ -13,9 +13,11 @@ export async function GET(_: NextRequest, ctx: Ctx) {
         const { id } = await ctx.params
         const env = getRequestContext().env as CloudflareEnv
         const order = await getOrderById(env.DB, parseInt(id))
+
         if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
         return NextResponse.json({ order })
-    } catch {
+    } catch (error) {
         return NextResponse.json({ error: 'Failed' }, { status: 500 })
     }
 }
@@ -24,14 +26,20 @@ export async function PATCH(request: NextRequest, ctx: Ctx) {
     try {
         const { id } = await ctx.params
         const env = getRequestContext().env as CloudflareEnv
-        const { status } = await request.json()
+
+        // FIX: Explicitly cast the JSON body to access the status property
+        const body = (await request.json()) as { status?: string }
+        const status = body.status
+
         const validStatuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded']
-        if (!validStatuses.includes(status)) {
+
+        if (!status || !validStatuses.includes(status)) {
             return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
         }
+
         await updateOrderStatus(env.DB, parseInt(id), status)
         return NextResponse.json({ success: true })
-    } catch {
-        return NextResponse.json({ error: 'Failed' }, { status: 500 })
+    } catch (error) {
+        return NextResponse.json({ error: 'Failed to update' }, { status: 500 })
     }
 }
