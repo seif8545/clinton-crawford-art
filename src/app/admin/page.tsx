@@ -47,8 +47,8 @@ export default async function AdminDashboard() {
               <div key={card.key} className="glass-card p-6">
                 <p className="text-xs text-dusk/50 tracking-widest uppercase font-body mb-2">{card.label}</p>
                 <p className={`font-display text-4xl ${card.color}`}>
-                  {fmt((analytics as Record<string, number>)[card.key] ?? 0, card.format)}
-                </p>
+                        {fmt((analytics as unknown as Record<string, number>)[card.key] ?? 0, card.format)}
+                    </p>
               </div>
             ))}
           </div>
