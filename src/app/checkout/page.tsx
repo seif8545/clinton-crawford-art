@@ -1,9 +1,11 @@
 // src/app/checkout/success/page.tsx
-export const runtime = 'edge';
 
 import { Suspense } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SuccessContent from './SuccessContent';
+
+export const runtime = 'edge';
 
 export default function SuccessPage() {
     return (
