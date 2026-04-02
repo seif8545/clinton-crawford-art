@@ -7,15 +7,17 @@ import { getArtworkById, updateArtwork, deleteArtwork } from '@/lib/db'
 import { deleteFromR2 } from '@/lib/r2'
 import type { CloudflareEnv, Artwork } from '@/types'
 
-// Next.js 15 requires params to be a Promise
-type Ctx = {
-    params: Promise<{ id: string }>
-}
+/**
+ * Next.js 15 Route Handlers require the second argument to have params as a Promise.
+ * Using this explicit structure helps the Next.js build worker validate the types correctly.
+ */
 
-export async function GET(_: NextRequest, ctx: Ctx) {
+export async function GET(
+    _: NextRequest, 
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
-        // Await params as required in Next.js 15
-        const { id } = await ctx.params
+        const { id } = await params
         const env = getRequestContext().env as CloudflareEnv
         const artwork = await getArtworkById(env.DB, parseInt(id))
 
@@ -30,12 +32,14 @@ export async function GET(_: NextRequest, ctx: Ctx) {
     }
 }
 
-export async function PATCH(request: NextRequest, ctx: Ctx) {
+export async function PATCH(
+    request: NextRequest, 
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
-        const { id } = await ctx.params
+        const { id } = await params
         const env = getRequestContext().env as CloudflareEnv
 
-        // Cast body to Partial<Artwork> for the update utility
         const body = (await request.json()) as Partial<Artwork>
 
         await updateArtwork(env.DB, parseInt(id), body)
@@ -46,15 +50,17 @@ export async function PATCH(request: NextRequest, ctx: Ctx) {
     }
 }
 
-export async function DELETE(_: NextRequest, ctx: Ctx) {
+export async function DELETE(
+    _: NextRequest, 
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
-        const { id } = await ctx.params
+        const { id } = await params
         const env = getRequestContext().env as CloudflareEnv
         const artworkId = parseInt(id)
 
         const artwork = await getArtworkById(env.DB, artworkId)
 
-        // Clean up R2 images before deleting DB record
         if (artwork?.images) {
             for (const img of artwork.images) {
                 await deleteFromR2(env.BUCKET, img.r2_key)
