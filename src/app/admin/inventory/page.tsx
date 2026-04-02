@@ -95,7 +95,9 @@ export default function InventoryPage() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 })
-                const d = await res.json()
+
+                // FIX: Explicitly cast the creation response so TypeScript can access 'id'
+                const d = (await res.json()) as { id: number }
                 artworkId = d.id
             }
 
@@ -111,10 +113,12 @@ export default function InventoryPage() {
             setMsg('Saved successfully')
             setShowForm(false)
             load()
-        } catch {
+        } catch (error) {
+            console.error("Save error:", error)
             setMsg('Error saving. Please try again.')
+        } finally {
+            setSaving(false)
         }
-        setSaving(false)
     }
 
     async function handleDelete(id: number, title: string) {
