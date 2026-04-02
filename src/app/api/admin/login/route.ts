@@ -8,7 +8,7 @@ import type { CloudflareEnv } from '@/types'
 export async function POST(request: NextRequest) {
   try {
     const env = getRequestContext().env as CloudflareEnv
-    const { password } = await request.json()
+      const { password } = (await request.json()) as { password?: string }
 
     if (!password || password !== env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
