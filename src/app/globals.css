@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ─────────────────────────────────────────────── */
+:root {
+    --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+    --font-lora: 'Lora', Georgia, serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    /* Light magical realism palette */
+    --parchment: #FAF6EF;
+    --vellum: #F2EBE0;
+    --whisper: #E8DED2;
+    --ink: #2C1F14;
+    --dusk: #6B4F3A;
+    --blush: #D4607A; /* pulls it redder, closer to the painting */
+    --blush-light: #ECA0B0;
+    --celestial: #8FAEC8;
+    --gold: #B8882A;
+    --gold-light: #D4A84B;
+    --gold-pale: #EDD9A3;
+    --ember: #C97A45;
+    --sage: #8FAF8A;
+    --lavender: #B8A8CC;
+    --crimson: #C42040;
+    --rose: #E8728A;
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--parchment);
+  color: var(--ink);
+  font-family: var(--font-lora);
+  font-size: 1rem;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ─── Typography ────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-cormorant);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+/* ─── Selection ─────────────────────────────────────────────────────────── */
+::selection {
+  background: rgba(184, 136, 42, 0.2);
+  color: var(--ink);
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--vellum); }
+::-webkit-scrollbar-thumb { background: var(--whisper); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--blush-light); }
+
+/* ─── Utility Classes ───────────────────────────────────────────────────── */
+@layer components {
+
+  /* Crimson divider */
+    .divider-crimson {
+        @apply w-16 h-px;
+        background: linear-gradient(to right, transparent, #C42040, transparent);
+        opacity: 0.35;
+    }
+
+  /* Shimmer text */
+  .text-gold-shimmer {
+    background: linear-gradient(135deg, #8A6010 0%, #B8882A 35%, #D4A84B 55%, #B8882A 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+
+  /* Light glass card */
+  .glass-card {
+    background: rgba(255, 252, 247, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(184, 136, 42, 0.15);
+    box-shadow: 0 2px 20px rgba(44, 31, 20, 0.06);
+  }
+
+  /* Primary CTA button */
+  .btn-portal {
+    @apply relative inline-flex items-center gap-2 px-8 py-3 font-display text-lg tracking-widest uppercase;
+    background: var(--ink);
+    color: var(--parchment);
+    transition: all 0.3s ease;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-portal:hover {
+    background: var(--dusk);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(44, 31, 20, 0.2);
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply relative inline-flex items-center gap-2 px-8 py-3 font-display text-lg tracking-widest uppercase;
+    color: var(--ink);
+    border: 1px solid rgba(44, 31, 20, 0.25);
+    transition: all 0.3s ease;
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(184, 136, 42, 0.05);
+  }
+
+  /* Gold accent button */
+  .btn-gold {
+    @apply relative inline-flex items-center gap-2 px-8 py-3 font-display text-lg tracking-widest uppercase;
+    background: linear-gradient(135deg, #8A6010, #B8882A, #D4A84B);
+    color: #FAF6EF;
+    transition: all 0.3s ease;
+  }
+  .btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(184, 136, 42, 0.35);
+  }
+
+  /* Status badges */
+  .badge-available {
+    @apply text-xs tracking-widest uppercase px-3 py-1;
+    color: var(--gold);
+    border: 1px solid rgba(184, 136, 42, 0.3);
+    background: rgba(184, 136, 42, 0.08);
+  }
+  .badge-sold {
+    @apply text-xs tracking-widest uppercase px-3 py-1;
+    color: var(--dusk);
+    border: 1px solid rgba(107, 79, 58, 0.25);
+    background: rgba(107, 79, 58, 0.06);
+  }
+  .badge-reserved {
+    @apply text-xs tracking-widest uppercase px-3 py-1;
+    color: var(--celestial-deep, #5A84A8);
+    border: 1px solid rgba(143, 174, 200, 0.4);
+    background: rgba(143, 174, 200, 0.1);
+  }
+
+  /* Subtle paper texture overlay */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+  }
+
+  /* Fade-up animation */
+  .animate-fade-up { animation: fadeUp 0.8s ease forwards; }
+  .animate-delay-100 { animation-delay: 0.1s; }
+  .animate-delay-200 { animation-delay: 0.2s; }
+  .animate-delay-300 { animation-delay: 0.3s; }
+  .animate-delay-400 { animation-delay: 0.4s; }
+  .animate-delay-500 { animation-delay: 0.5s; }
+
+  /* Admin inputs — adapted for light theme */
+  .admin-input {
+    background: rgba(250, 246, 239, 0.9);
+    border: 1px solid rgba(44, 31, 20, 0.15);
+    color: var(--ink);
+    padding: 0.625rem 0.875rem;
+    font-family: var(--font-lora);
+    font-size: 0.9rem;
+    width: 100%;
+    transition: border-color 0.2s ease;
+  }
+  .admin-input:focus {
+    outline: none;
+    border-color: rgba(184, 136, 42, 0.5);
+    box-shadow: 0 0 0 3px rgba(184, 136, 42, 0.08);
+  }
+  .admin-input::placeholder { color: rgba(44, 31, 20, 0.3); }
+  .admin-select { appearance: none; }
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to   { background-position:  200% center; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes pulseGold {
+  0%, 100% { box-shadow: 0 0 12px rgba(184,136,42,0.2); }
+  50%       { box-shadow: 0 0 28px rgba(184,136,42,0.4); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

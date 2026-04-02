@@ -1,0 +1,36 @@
+{
+  "name": "clinton-crawford-art",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "preview": "npm run pages:build && wrangler pages dev",
+    "deploy": "npm run pages:build && wrangler pages deploy",
+    "start": "next start",
+    "lint": "next lint",
+    "db:init:local": "wrangler d1 execute artist-db --local --file=schema.sql",
+    "db:init:remote": "wrangler d1 execute artist-db --file=schema.sql"
+  },
+  "dependencies": {
+    "next": "^15.2.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.2",
+    "@cloudflare/workers-types": "^4.20240725.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^8",
+    "eslint-config-next": "^15.2.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5",
+    "wrangler": "^3.65.0"
+  }
+}

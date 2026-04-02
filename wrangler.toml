@@ -1,0 +1,29 @@
+name = "clinton-crawford-art"
+compatibility_date = "2024-07-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+# ─── CLOUDFLARE D1 DATABASE ──────────────────────────────────────────────────
+# Run: wrangler d1 create artist-db
+# Then copy the database_id from the output into the id field below.
+[[d1_databases]]
+binding = "DB"
+database_name = "artist-db"
+database_id = "YOUR_D1_DATABASE_ID_HERE"
+
+# ─── CLOUDFLARE R2 BUCKET (image storage) ────────────────────────────────────
+# Run: wrangler r2 bucket create artist-artwork
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "artist-artwork"
+
+# ─── ENVIRONMENT VARIABLES ───────────────────────────────────────────────────
+[vars]
+NEXT_PUBLIC_SITE_NAME = "Clinton Crawford Art"
+NEXT_PUBLIC_ARTIST_NAME = "Dr. Clinton Crawford"
+# R2 public URL — set after enabling public access on your R2 bucket
+R2_PUBLIC_URL = "https://pub-YOURHASH.r2.dev"
+
+# ─── SECRETS (set via: wrangler secret put SECRET_NAME) ─────────────────────
+# ADMIN_PASSWORD     — password to access /admin
+# ADMIN_SECRET_KEY   — JWT signing secret for admin sessions

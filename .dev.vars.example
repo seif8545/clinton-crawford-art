@@ -1,0 +1,7 @@
+# .dev.vars — Local Cloudflare Workers secrets (never commit this file)
+# Used by `wrangler pages dev` for local development.
+# Copy this file to .dev.vars and fill in your values.
+
+ADMIN_PASSWORD=your-secure-admin-password-here
+ADMIN_SECRET_KEY=your-random-32-char-secret-here
+R2_PUBLIC_URL=https://pub-YOURHASH.r2.dev
