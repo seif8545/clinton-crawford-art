@@ -1,4 +1,5 @@
 // src/app/api/artworks/[id]/route.ts
+// Updated for Next.js 15 async params - Build Trigger v2
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
