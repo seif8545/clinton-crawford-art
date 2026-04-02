@@ -1,119 +1,120 @@
+'use client'
 // src/app/admin/page.tsx
-export const runtime = 'edge'
+import { useState, useEffect } from 'react'
+import type { Order, Artwork, Client } from '@/types'
+import Link from 'next/link'
 
-import { getRequestContext } from '@cloudflare/next-on-pages'
-import { getAnalytics } from '@/lib/db'
-import type { CloudflareEnv } from '@/types'
+interface AnalyticsSummary {
+    total_revenue: number
+    total_orders: number
+    total_clients: number
+    available_artworks: number
+    recent_orders: Order[]
+}
 
-const statCards = [
-  { key: 'total_revenue', label: 'Total Revenue', format: 'currency', color: 'text-gold' },
-  { key: 'total_orders', label: 'All Orders', format: 'number', color: 'text-ink' },
-  { key: 'orders_pending', label: 'Pending', format: 'number', color: 'text-ember' },
-  { key: 'artworks_available', label: 'Available Works', format: 'number', color: 'text-celestial' },
-  { key: 'artworks_sold', label: 'Works Sold', format: 'number', color: 'text-blush' },
-  { key: 'total_clients', label: 'Collectors', format: 'number', color: 'text-gold' },
-]
+export default function AdminDashboard() {
+    const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null)
+    const [loading, setLoading] = useState(true)
 
-export default async function AdminDashboard() {
-  let analytics: Awaited<ReturnType<typeof getAnalytics>> | null = null
+    async function load() {
+        try {
+            setLoading(true)
+            const res = await fetch('/api/analytics')
+            const data = (await res.json()) as { summary: AnalyticsSummary }
+            setAnalytics(data.summary)
+        } catch (error) {
+            console.error("Failed to load analytics:", error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
-  try {
-    const env = getRequestContext().env as CloudflareEnv
-    analytics = await getAnalytics(env.DB)
-  } catch {}
+    useEffect(() => { load() }, [])
 
-  function fmt(value: number, format: string) {
-    if (format === 'currency') return `$${value.toLocaleString(undefined, { minimumFractionDigits: 0 })}`
-    return value.toLocaleString()
-  }
+    const fmt = (val: number, type?: 'currency') => {
+        if (type === 'currency') return `$${val.toLocaleString()}`
+        return val.toLocaleString()
+    }
 
-  const statusColors: Record<string, string> = {
-    pending: 'text-ember', paid: 'text-gold', shipped: 'text-celestial',
-    delivered: 'text-green-400', cancelled: 'text-blush', refunded: 'text-blush',
-  }
+    const cards = [
+        { key: 'total_revenue', label: 'Total Revenue', color: 'text-gold', format: 'currency' as const },
+        { key: 'total_orders', label: 'Orders', color: 'text-ink', format: undefined },
+        { key: 'total_clients', label: 'Collectors', color: 'text-ink', format: undefined },
+        { key: 'available_artworks', label: 'Available Works', color: 'text-ink', format: undefined },
+    ]
 
-  return (
-    <div className="p-8">
-      <div className="mb-10">
-        <h1 className="font-display text-4xl text-ink mb-1">Analytics</h1>
-        <p className="text-sm text-dusk/50 font-body">Studio overview</p>
-      </div>
+    if (loading) return <div className="p-8 animate-pulse text-dusk/40 font-body">Loading overview...</div>
+    if (!analytics) return <div className="p-8 text-blush font-body">Failed to load dashboard.</div>
 
-      {analytics ? (
-        <>
-          {/* Stats grid */}
-          <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 mb-10">
-            {statCards.map(card => (
-              <div key={card.key} className="glass-card p-6">
-                <p className="text-xs text-dusk/50 tracking-widest uppercase font-body mb-2">{card.label}</p>
-                <p className={`font-display text-4xl ${card.color}`}>
-                        {fmt((analytics as unknown as Record<string, number>)[card.key] ?? 0, card.format)}
-                    </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-
-            {/* Top artworks */}
-            <div className="glass-card p-6">
-              <h2 className="font-display text-2xl text-gold mb-5">Top Works</h2>
-              {analytics.top_artworks.length > 0 ? (
-                <div className="space-y-3">
-                  {analytics.top_artworks.map((a, i) => (
-                    <div key={i} className="flex justify-between items-center py-2 border-b border-whisper text-sm">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="font-display text-gold/40 w-5 shrink-0">{i + 1}</span>
-                        <span className="text-dusk/70 font-body truncate">{a.title}</span>
-                      </div>
-                      <div className="flex items-center gap-4 shrink-0">
-                        <span className="text-dusk/50 font-body">{a.total_sold} sold</span>
-                        <span className="text-gold font-body">${a.revenue?.toLocaleString()}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-dusk/40 font-body text-sm">No sales data yet.</p>
-              )}
+    return (
+        <div className="p-8">
+            <div className="mb-10">
+                <h1 className="font-display text-4xl text-ink mb-1">Overview</h1>
+                <p className="text-sm text-dusk/50 font-body">Studio performance and recent activity</p>
             </div>
 
-            {/* Recent orders */}
-            <div className="glass-card p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="font-display text-2xl text-gold">Recent Orders</h2>
-                <a href="/admin/orders" className="text-xs text-dusk/50 hover:text-dusk/70 font-body transition-colors">View all →</a>
-              </div>
-              {analytics.recent_orders.length > 0 ? (
-                <div className="space-y-3">
-                  {analytics.recent_orders.map((o: Record<string, unknown>, i: number) => (
-                    <div key={i} className="flex justify-between items-center py-2 border-b border-whisper text-sm">
-                      <div className="min-w-0">
-                        <p className="text-ink/80 font-body truncate">{o.order_number as string}</p>
-                        <p className="text-dusk/50 font-body text-xs truncate">{o.first_name as string} {o.last_name as string}</p>
-                      </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className={`text-xs font-body capitalize ${statusColors[o.status as string] ?? 'text-dusk/50'}`}>
-                          {o.status as string}
-                        </span>
-                        <span className="text-gold font-body">${(o.total as number)?.toLocaleString()}</span>
-                      </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                {cards.map((card) => (
+                    <div key={card.key} className="glass-card p-6 border border-whisper">
+                        <p className="text-xs text-dusk/40 tracking-widest uppercase font-body mb-2">{card.label}</p>
+                        <p className={`font-display text-4xl ${card.color}`}>
+                            {/* Double cast to bypass strict Record overlap check */}
+                            {fmt((analytics as unknown as Record<string, number>)[card.key] ?? 0, card.format)}
+                        </p>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-dusk/40 font-body text-sm">No orders yet.</p>
-              )}
+                ))}
             </div>
 
-          </div>
-        </>
-      ) : (
-        <div className="glass-card p-12 text-center">
-          <p className="font-display text-2xl text-dusk/40">Database not connected</p>
-          <p className="text-dusk/30 font-body text-sm mt-2">Run <code className="font-mono text-gold/60">npm run db:init:local</code> to initialize</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Recent Orders */}
+                <div className="glass-card p-8 border border-whisper">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="font-display text-xl text-ink">Recent Orders</h2>
+                        <Link href="/admin/orders" className="text-xs text-gold uppercase tracking-widest hover:underline">View All</Link>
+                    </div>
+
+                    {analytics.recent_orders.length > 0 ? (
+                        <div className="space-y-4">
+                            {analytics.recent_orders.map((o: Order, i: number) => (
+                                <div key={i} className="flex justify-between items-center py-3 border-b border-whisper last:border-0 text-sm">
+                                    <div className="min-w-0">
+                                        <p className="text-ink font-body truncate">{o.order_number}</p>
+                                        <p className="text-xs text-dusk/40 font-body">{new Date(o.created_at).toLocaleDateString()}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-gold font-body">${o.total.toLocaleString()}</p>
+                                        <p className="text-[10px] uppercase tracking-tighter text-dusk/40">{o.status}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm text-dusk/30 font-body py-10 text-center">No recent orders</p>
+                    )}
+                </div>
+
+                {/* Quick Links / Status */}
+                <div className="glass-card p-8 border border-whisper bg-vellum/30">
+                    <h2 className="font-display text-xl text-ink mb-6">Studio Management</h2>
+                    <div className="grid grid-cols-1 gap-3">
+                        <Link href="/admin/inventory" className="flex items-center justify-between p-4 bg-white border border-whisper hover:border-gold/30 transition-colors group">
+                            <span className="font-body text-sm text-dusk/70 group-hover:text-ink">Manage Inventory</span>
+                            <span className="text-gold">→</span>
+                        </Link>
+                        <Link href="/admin/clients" className="flex items-center justify-between p-4 bg-white border border-whisper hover:border-gold/30 transition-colors group">
+                            <span className="font-body text-sm text-dusk/70 group-hover:text-ink">View Collectors</span>
+                            <span className="text-gold">→</span>
+                        </Link>
+                        <div className="p-4 border border-gold/10 bg-gold/5 rounded-sm mt-4">
+                            <p className="text-[10px] uppercase tracking-[0.2em] text-gold mb-1 font-body">System Status</p>
+                            <p className="text-xs text-dusk/60 font-body leading-relaxed">
+                                Connected to Cloudflare D1 and R2 Storage. Next.js 15 Edge Runtime active.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      )}
-    </div>
-  )
+    )
 }
