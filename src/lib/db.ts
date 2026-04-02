@@ -154,6 +154,7 @@ export async function getOrderById(db: D1Database, id: number): Promise<Order | 
     FROM orders o LEFT JOIN clients c ON c.id = o.client_id
     WHERE o.id = ?
   `).bind(id).first<Record<string, unknown>>()
+
     if (!order) return null
 
     const { results: items } = await db
@@ -161,16 +162,20 @@ export async function getOrderById(db: D1Database, id: number): Promise<Order | 
         .bind(id).all<OrderItem>()
 
     return {
-        // THE FIX: Use double cast here as well
         ...(order as unknown as Order),
-        shipping_address: order.shipping_address ? JSON.parse(order.shipping_address as string) : null,
+        shipping_address: order.shipping_address ? JSON.parse(order.shipping_address as string) : undefined,
         client: order.email ? {
-            id: order.client_id as number, first_name: order.first_name as string,
-            last_name: order.last_name as string, email: order.email as string,
-            phone: order.phone as string | null, shipping_address: null, notes: null,
-            created_at: '', updated_at: ''
-        } : null,
-        items,
+            id: order.client_id as number,
+            first_name: order.first_name as string,
+            last_name: order.last_name as string,
+            email: order.email as string,
+            phone: order.phone as string | null,
+            shipping_address: undefined,
+            notes: undefined,
+            created_at: '',
+            updated_at: ''
+        } : undefined,
+        items: items as OrderItem[],
     }
 }
 
