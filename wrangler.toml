@@ -8,8 +8,7 @@ pages_build_output_dir = ".open-next/assets"
 
 [assets]
 directory = ".open-next/assets"
-binding = "ASSETS"
-
+binding = "CLOUDFLARE_ASSETS" # <--- Change this from ASSETS to CLOUDFLARE_ASSETS
 
 # ─── CLOUDFLARE D1 DATABASE ──────────────────────────────────────────────────
 [[d1_databases]]
