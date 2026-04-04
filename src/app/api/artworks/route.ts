@@ -1,6 +1,5 @@
 // src/app/api/artworks/route.ts
-export const runtime = 'edge'
-
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server'
 import { getArtworks, createArtwork } from '@/lib/db'
 import type { CloudflareEnv, Artwork } from '@/types'

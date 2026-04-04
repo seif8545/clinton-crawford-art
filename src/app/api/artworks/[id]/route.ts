@@ -1,6 +1,5 @@
 // src/app/api/artworks/[id]/route.ts
-export const runtime = 'edge'
-
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server'
 import { getArtworkById, updateArtwork, deleteArtwork } from '@/lib/db'
 import type { CloudflareEnv, Artwork } from '@/types'

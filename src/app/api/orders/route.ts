@@ -1,6 +1,5 @@
 // src/app/api/orders/[id]/route.ts
-export const runtime = 'edge'
-
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server'
 import { getOrderById, updateOrderStatus } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'

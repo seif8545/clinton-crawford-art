@@ -1,6 +1,5 @@
 // src/app/api/admin/login/route.ts
-export const runtime = 'edge'
-
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server'
 import type { CloudflareEnv } from '@/types'
 

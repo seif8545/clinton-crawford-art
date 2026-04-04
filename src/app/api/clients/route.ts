@@ -1,6 +1,5 @@
 // src/app/api/clients/route.ts
-export const runtime = 'edge'
-
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server'
 import { getClients } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'

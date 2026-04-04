@@ -1,6 +1,5 @@
 // src/app/api/upload/route.ts
-export const runtime = 'edge'
-
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server'
 import { addArtworkImage } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'

@@ -1,6 +1,5 @@
 // src/app/artwork/[id]/page.tsx
-export const runtime = 'edge'
-
+export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getArtworkBySlug, getArtworks } from '@/lib/db'
