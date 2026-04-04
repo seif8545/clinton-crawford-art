@@ -1,7 +1,7 @@
 name = "clinton-crawford-art"
 compatibility_date = "2024-07-01"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".vercel/output/static"
+pages_build_output_dir = ".open-next/assets"
 
 # ─── CLOUDFLARE D1 DATABASE ──────────────────────────────────────────────────
 # Run: wrangler d1 create artist-db
