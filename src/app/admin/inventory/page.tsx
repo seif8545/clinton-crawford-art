@@ -28,7 +28,7 @@ export default function InventoryPage() {
   async function load() {
     setLoading(true)
     const res = await fetch('/api/artworks')
-    const data = await res.json()
+    const data = await res.json() as { artworks: Artwork[] }
     setArtworks(data.artworks ?? [])
     setLoading(false)
   }
