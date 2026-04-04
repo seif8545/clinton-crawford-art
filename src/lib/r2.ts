@@ -1,42 +1,10 @@
-// ═══════════════════════════════════════════════════════════
-//  src/lib/r2.ts — Cloudflare R2 helpers
-// ═══════════════════════════════════════════════════════════
+// src/lib/r2.ts
+// R2 removed — images are served via public URL stored directly in artwork_images.r2_key
+// r2_key now stores a full URL or a relative /public path instead of an R2 object key.
 
-export function r2KeyToUrl(r2PublicUrl: string, r2Key: string): string {
-  return `${r2PublicUrl.replace(/\/$/, '')}/${r2Key}`
-}
-
-export async function uploadToR2(
-  bucket: R2Bucket,
-  key: string,
-  body: ArrayBuffer,
-  contentType: string
-): Promise<void> {
-  await bucket.put(key, body, {
-    httpMetadata: { contentType },
-  })
-}
-
-export async function deleteFromR2(bucket: R2Bucket, key: string): Promise<void> {
-  await bucket.delete(key)
-}
-
-export function generateR2Key(artworkId: number, filename: string): string {
-  const ext = filename.split('.').pop() ?? 'jpg'
-  const ts = Date.now()
-  return `artworks/${artworkId}/${ts}.${ext}`
-}
-
-// Hydrate artwork images with full public URLs
-export function hydrateImageUrls<T extends { r2_key?: string; images?: { r2_key: string; url?: string }[] }>(
-  r2PublicUrl: string,
-  item: T
-): T {
-  if (item.images) {
-    item.images = item.images.map(img => ({
-      ...img,
-      url: r2KeyToUrl(r2PublicUrl, img.r2_key),
-    }))
-  }
-  return item
+export function r2KeyToUrl(_r2PublicUrl: string, r2Key: string): string {
+  // If r2_key is already a full URL, return as-is
+  if (r2Key.startsWith('http')) return r2Key
+  // Otherwise treat as a public folder path
+  return r2Key
 }

@@ -1,14 +1,12 @@
-// ═══════════════════════════════════════════════════════════
-//  src/types/index.ts — Shared TypeScript interfaces
-// ═══════════════════════════════════════════════════════════
+// src/types/index.ts
 
 export interface ArtworkImage {
   id: number
   artwork_id: number
-  r2_key: string
+  r2_key: string   // stores full image URL
   is_primary: number
   sort_order: number
-  url?: string // Hydrated on the server from R2_PUBLIC_URL + r2_key
+  url?: string
 }
 
 export interface Artwork {
@@ -27,7 +25,7 @@ export interface Artwork {
   created_at: string
   updated_at: string
   images?: ArtworkImage[]
-  primary_image_url?: string // convenience field
+  primary_image_url?: string
 }
 
 export interface Client {
@@ -80,7 +78,6 @@ export interface Order {
   items?: OrderItem[]
 }
 
-// Cart (client-side only, managed by Zustand)
 export interface CartItem {
   artwork_id: number
   title: string
@@ -101,7 +98,6 @@ export interface CartState {
   count: () => number
 }
 
-// Analytics
 export interface AnalyticsSummary {
   total_revenue: number
   total_orders: number
@@ -115,11 +111,9 @@ export interface AnalyticsSummary {
   recent_orders: Order[]
 }
 
-// Cloudflare env bindings
+// Cloudflare env — no R2 bucket
 export interface CloudflareEnv {
   DB: D1Database
-  BUCKET: R2Bucket
-  R2_PUBLIC_URL: string
   ADMIN_PASSWORD: string
   ADMIN_SECRET_KEY: string
 }

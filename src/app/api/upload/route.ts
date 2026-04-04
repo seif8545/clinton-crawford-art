@@ -3,45 +3,28 @@ export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getRequestContext } from '@cloudflare/next-on-pages'
-import { uploadToR2, generateR2Key } from '@/lib/r2'
 import { addArtworkImage } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
+// R2 removed. Images must be hosted externally (e.g. Cloudflare Images, imgbb, etc.)
+// and their full URL passed as `image_url` in the request body.
 
 export async function POST(request: NextRequest) {
   try {
     const env = getRequestContext().env as CloudflareEnv
-    const formData = await request.formData()
+    const body = await request.json() as { artwork_id: string; image_url: string; is_primary?: boolean }
 
-    const file = formData.get('file') as File | null
-    const artworkIdStr = formData.get('artwork_id') as string | null
-    const isPrimary = formData.get('is_primary') === '1'
+    const { artwork_id, image_url, is_primary = false } = body
 
-    if (!file || !artworkIdStr) {
-      return NextResponse.json({ error: 'file and artwork_id are required' }, { status: 400 })
+    if (!artwork_id || !image_url) {
+      return NextResponse.json({ error: 'artwork_id and image_url are required' }, { status: 400 })
     }
 
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Use JPEG, PNG, WebP, or AVIF.' }, { status: 400 })
-    }
+    await addArtworkImage(env.DB, parseInt(artwork_id), image_url, is_primary)
 
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'File too large. Maximum 10 MB.' }, { status: 400 })
-    }
-
-    const artworkId = parseInt(artworkIdStr)
-    const r2Key = generateR2Key(artworkId, file.name)
-    const buffer = await file.arrayBuffer()
-
-    await uploadToR2(env.BUCKET, r2Key, buffer, file.type)
-    await addArtworkImage(env.DB, artworkId, r2Key, isPrimary)
-
-    const publicUrl = `${(env.R2_PUBLIC_URL ?? '').replace(/\/$/, '')}/${r2Key}`
-    return NextResponse.json({ r2Key, url: publicUrl }, { status: 201 })
+    return NextResponse.json({ url: image_url }, { status: 201 })
   } catch (err) {
     console.error(err)
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to save image' }, { status: 500 })
   }
 }
