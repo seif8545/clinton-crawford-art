@@ -1,5 +1,3 @@
-// src/app/gallery/page.tsx
-export const runtime = 'edge'
 
 import type { Metadata } from 'next'
 import { getRequestContext } from '@cloudflare/next-on-pages'
