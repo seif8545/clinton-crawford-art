@@ -77,8 +77,8 @@ export default function InventoryPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
-          const d = await res.json() as { id: number }
-          artworkId = d.id
+        const d = await res.json() as { id: number }
+        artworkId = d.id
       }
 
       // Save image URL if provided
