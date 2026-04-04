@@ -1,5 +1,4 @@
 // src/app/checkout/success/page.tsx
-export const runtime = 'edge';
 
 import { Suspense } from 'react';
 import Navbar from '@/components/Navbar';

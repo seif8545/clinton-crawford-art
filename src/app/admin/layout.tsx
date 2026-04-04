@@ -1,6 +1,4 @@
 // src/app/admin/layout.tsx
-export const runtime = 'edge'
-
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import AdminNav from '@/components/admin/AdminNav'
