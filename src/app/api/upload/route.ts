@@ -2,7 +2,6 @@
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { addArtworkImage } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'
 
@@ -11,8 +10,8 @@ import type { CloudflareEnv } from '@/types'
 
 export async function POST(request: NextRequest) {
   try {
-    const env = getRequestContext().env as CloudflareEnv
-    const body = await request.json() as { artwork_id: string; image_url: string; is_primary?: boolean }
+      // NEW (Add this)
+      const env = process.env as any;    const body = await request.json() as { artwork_id: string; image_url: string; is_primary?: boolean }
 
     const { artwork_id, image_url, is_primary = false } = body
 

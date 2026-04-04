@@ -2,7 +2,6 @@
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getOrderById, updateOrderStatus } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'
 
@@ -12,7 +11,8 @@ export async function GET(
 ) {
     try {
         const { id } = await params
-        const env = getRequestContext().env as CloudflareEnv
+        // NEW (Add this)
+        const env = process.env as any;
         const order = await getOrderById(env.DB, parseInt(id))
 
         if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -30,8 +30,8 @@ export async function PATCH(
 ) {
     try {
         const { id } = await params
-        const env = getRequestContext().env as CloudflareEnv
-
+        // NEW (Add this)
+        const env = process.env as any;
         // THE FIX: Explicitly cast the JSON body to access 'status'
         const { status } = (await request.json()) as { status: string }
 

@@ -2,12 +2,12 @@
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import type { CloudflareEnv } from '@/types'
 
 export async function POST(request: NextRequest) {
   try {
-    const env = getRequestContext().env as CloudflareEnv
+      // NEW (Add this)
+      const env = process.env as any;
       const { password } = (await request.json()) as { password?: string }
 
     if (!password || password !== env.ADMIN_PASSWORD) {

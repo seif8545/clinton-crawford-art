@@ -3,7 +3,6 @@ export const runtime = 'edge'
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getArtworkBySlug, getArtworks } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'
 import Navbar from '@/components/Navbar'
@@ -20,8 +19,8 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { id } = await params
-    const env = getRequestContext().env as CloudflareEnv
-    const artwork = await getArtworkBySlug(env.DB, id)
+      // NEW (Add this)
+      const env = process.env as any;    const artwork = await getArtworkBySlug(env.DB, id)
     if (!artwork) return { title: 'Artwork Not Found' }
     return {
       title: artwork.title,
@@ -38,8 +37,8 @@ export default async function ArtworkPage({ params }: Props) {
   let related: Awaited<ReturnType<typeof getArtworks>> = []
 
   try {
-    const env = getRequestContext().env as CloudflareEnv
-    artwork = await getArtworkBySlug(env.DB, id)
+      // NEW (Add this)
+      const env = process.env as any;    artwork = await getArtworkBySlug(env.DB, id)
     if (!artwork) notFound()
 
     // r2_key now stores the full image URL directly

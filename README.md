@@ -274,7 +274,7 @@ Order numbers auto-generate in the format `CC-2024-0001`.
 | Database | Cloudflare D1 (SQLite at the edge) |
 | Image Storage | Cloudflare R2 |
 | Hosting | Cloudflare Pages |
-| CF Adapter | `@cloudflare/next-on-pages` |
+| CF Adapter | `` |
 | CI/CD | GitHub Actions |
 | Payments | Stripe-ready (simulated by default) |
 | Fonts | Cormorant Garamond + Lora (Google Fonts) |

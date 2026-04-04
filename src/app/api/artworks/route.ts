@@ -2,14 +2,13 @@
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getArtworks, createArtwork } from '@/lib/db'
 import type { CloudflareEnv, Artwork } from '@/types'
 
 export async function GET(request: NextRequest) {
     try {
-        const env = getRequestContext().env as CloudflareEnv
-        const { searchParams } = new URL(request.url)
+        // NEW (Add this)
+        const env = process.env as any;        const { searchParams } = new URL(request.url)
 
         const status = searchParams.get('status')
         const series = searchParams.get('series')
@@ -28,8 +27,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        const env = getRequestContext().env as CloudflareEnv
-
+        // NEW (Add this)
+        const env = process.env as any;
         // THE FIX: Explicitly cast the body as Partial<Artwork> 
         // to resolve the 'unknown' type error
         const body = (await request.json()) as Partial<Artwork>

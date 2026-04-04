@@ -2,7 +2,6 @@
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getArtworkById, updateArtwork, deleteArtwork } from '@/lib/db'
 import type { CloudflareEnv, Artwork } from '@/types'
 
@@ -12,8 +11,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const env = getRequestContext().env as CloudflareEnv
-    const artwork = await getArtworkById(env.DB, parseInt(id))
+      // NEW (Add this)
+      const env = process.env as any;    const artwork = await getArtworkById(env.DB, parseInt(id))
     if (!artwork) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     return NextResponse.json({ artwork })
   } catch {
@@ -27,8 +26,8 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params
-    const env = getRequestContext().env as CloudflareEnv
-    const body = await request.json() as Partial<Artwork>
+      // NEW (Add this)
+      const env = process.env as any;    const body = await request.json() as Partial<Artwork>
     await updateArtwork(env.DB, parseInt(id), body)
     return NextResponse.json({ success: true })
   } catch {
@@ -42,8 +41,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    const env = getRequestContext().env as CloudflareEnv
-    await deleteArtwork(env.DB, parseInt(id))
+      // NEW (Add this)
+      const env = process.env as any;    await deleteArtwork(env.DB, parseInt(id))
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Failed to delete' }, { status: 500 })
