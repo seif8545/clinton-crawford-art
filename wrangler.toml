@@ -1,24 +1,24 @@
 name = "clinton-crawford-art"
-compatibility_date = "2024-07-01"
+main = ".open-next/worker.js"
+compatibility_date = "2024-12-30"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".open-next"
+
+# This tells Cloudflare where your images and CSS are stored
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
 
 # ─── CLOUDFLARE D1 DATABASE ──────────────────────────────────────────────────
-# Run: wrangler d1 create artist-db
-# Then copy the database_id from the output into the id field below.
 [[d1_databases]]
 binding = "DB"
 database_name = "clinton-art-db"
 database_id = "d5f5820c-e018-4d6c-a0bf-6f6b3a493b1a"
-
-
 
 # ─── ENVIRONMENT VARIABLES ───────────────────────────────────────────────────
 [vars]
 NEXT_PUBLIC_SITE_NAME = "Clinton Crawford Art"
 NEXT_PUBLIC_ARTIST_NAME = "Dr. Clinton Crawford"
 
-
-# ─── SECRETS (set via: wrangler secret put SECRET_NAME) ─────────────────────
-# ADMIN_PASSWORD     — password to access /admin
-# ADMIN_SECRET_KEY   — JWT signing secret for admin sessions
+# SECRETS (Set these in the Cloudflare Dashboard under Worker Settings)
+# ADMIN_PASSWORD
+# ADMIN_SECRET_KEY
