@@ -11,11 +11,7 @@ binding = "DB"
 database_name = "clinton-art-db"
 database_id = "d5f5820c-e018-4d6c-a0bf-6f6b3a493b1a"
 
-# ─── CLOUDFLARE R2 BUCKET (image storage) ────────────────────────────────────
-# Run: wrangler r2 bucket create artist-artwork
-[[r2_buckets]]
-binding = "BUCKET"
-bucket_name = "artist-artwork"
+
 
 # ─── ENVIRONMENT VARIABLES ───────────────────────────────────────────────────
 [vars]
