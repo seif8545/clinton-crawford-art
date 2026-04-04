@@ -1,6 +1,6 @@
 // src/app/page.tsx
-export const runtime = 'edge'
-
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 import { getRequestContext } from '@cloudflare/next-on-pages'
 import { getArtworks } from '@/lib/db'
 import type { CloudflareEnv } from '@/types'
