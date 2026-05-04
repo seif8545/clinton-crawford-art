@@ -1,11 +1,9 @@
 name = "clinton-crawford-art"
-main = ".open-next/worker.js"
 compatibility_date = "2024-12-30"
 compatibility_flags = ["nodejs_compat"]
 
-[assets]
-directory = ".open-next/assets"
-binding = "CLOUDFLARE_ASSETS" 
+# This line satisfies the Cloudflare Pages dashboard requirement
+pages_build_output_dir = ".open-next/assets"
 
 # ─── CLOUDFLARE D1 DATABASE ──────────────────────────────────────────────────
 [[d1_databases]]
