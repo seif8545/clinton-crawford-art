@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { getArtworks } from '@/lib/db'
 import type { Artwork } from '@/types'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -14,30 +13,41 @@ interface Props {
     searchParams: Promise<{ series?: string; status?: string }>
 }
 
+// ─── Generate the 31 local paintings ───
+const galleryListings: Artwork[] = Array.from({ length: 31 }, (_, index) => {
+    const num = index + 1;
+    return {
+        id: `painting-${num}`,
+        title: `Untitled Composition ${num}`,
+        series: 'Originals', 
+        status: 'available', 
+        // Force TypeScript to accept null for the price
+        price: null as unknown as number, 
+        description: 'Original painting by Dr. Clinton Crawford.',
+        primary_image_url: `/images/painting-${num}.jpeg`,
+        images: [{ r2_key: `/images/painting-${num}.jpeg` }]
+    } as unknown as Artwork; // Double-cast to bypass missing properties like 'slug', 'medium', etc.
+});
+
 export default async function GalleryPage({ searchParams }: Props) {
     const { series, status } = await searchParams
-    let artworks: Artwork[] = []
-    let seriesList: string[] = []
-
-    try {
-        // ─── OPENNEXT UPDATE: Access DB directly from process.env ───
-        const db = process.env.DB as any;
-
-        const all = await getArtworks(db, { status, series })
-        artworks = all.map(a => ({
-            ...a,
-            primary_image_url: a.images?.[0]?.r2_key ?? undefined,
-        }))
-
-        const allForSeries = await getArtworks(db)
-        seriesList = [...new Set(allForSeries.map(a => a.series).filter(Boolean) as string[])]
-    } catch (error) {
-        // Log the error instead of silently swallowing it
-        console.error("🔥 GALLERY DB ERROR:", error);
-    }
 
     const activeStatus = status ?? 'all'
     const activeSeries = series ?? 'all'
+
+    // ─── Start with all 31 paintings ───
+    let artworks = [...galleryListings]
+
+    // ─── Apply filters manually since we bypassed the DB ───
+    if (activeStatus !== 'all') {
+        artworks = artworks.filter(a => a.status === activeStatus)
+    }
+    if (activeSeries !== 'all') {
+        artworks = artworks.filter(a => a.series === activeSeries)
+    }
+
+    // ─── Generate series list for the filter buttons ───
+    const seriesList = [...new Set(galleryListings.map(a => a.series).filter(Boolean) as string[])]
 
     return (
         <>
