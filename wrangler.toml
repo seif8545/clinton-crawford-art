@@ -1,9 +1,7 @@
 name = "clinton-crawford-art"
 compatibility_date = "2024-12-30"
 compatibility_flags = ["nodejs_compat"]
-
-# This line satisfies the Cloudflare Pages dashboard requirement
-pages_build_output_dir = ".open-next/assets"
+pages_build_output_dir = ".vercel/output/static"
 
 # ─── CLOUDFLARE D1 DATABASE ──────────────────────────────────────────────────
 [[d1_databases]]
