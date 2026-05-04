@@ -21,7 +21,6 @@ const galleryListings: Artwork[] = Array.from({ length: 31 }, (_, index) => {
         title: `Untitled Composition ${num}`,
         series: 'Originals', 
         status: 'available', 
-        // Force TypeScript to accept null for the price
         price: null as unknown as number, 
         description: 'Original painting by Dr. Clinton Crawford.',
         primary_image_url: `/images/painting-${num}.jpeg`,
