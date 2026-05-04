@@ -166,7 +166,7 @@ export default async function HomePage() {
                   and realms that exist only in the space between waking and dreaming.
                 </p>
                 <div className="grid grid-cols-3 gap-6 border-t border-whisper pt-8">
-                  {[{ label: 'Works', value: '12' }, { label: 'Medium', value: 'Acrylic' }, { label: 'Year', value: '2023–24' }].map(stat => (
+                  {[{ label: 'Works', value: '12' }, { label: 'Medium', value: 'Acrylic' }].map(stat => (
                     <div key={stat.label}>
                       <div className="font-display text-3xl text-ink">{stat.value}</div>
                       <div className="text-xs text-dusk/50 tracking-widest uppercase font-body mt-1">{stat.label}</div>
