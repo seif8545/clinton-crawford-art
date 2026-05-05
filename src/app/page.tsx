@@ -19,7 +19,7 @@ export default function HomePage() {
       <main>
 
         {/* ── HERO ──────────────────────────────────────────────────────── */}
-        <section className="relative min-h-screen flex items-center overflow-hidden">
+        <section className="relative min-h-screen flex items-center overflow-hidden bg-parchment">
           {/* Hero image */}
           {heroPainting && (
             <Image
@@ -28,11 +28,14 @@ export default function HomePage() {
               fill
               priority
               sizes="100vw"
-              className="object-cover"
+              className="object-cover lg:object-right"
             />
           )}
-          {/* Soft parchment veil so the type is legible */}
-          <div className="absolute inset-0 bg-parchment/82" />
+          
+          {/* Gradient veil: Solid on the text side, fading out to reveal the painting */}
+          <div className="absolute inset-0 bg-gradient-to-b from-parchment via-parchment/95 to-transparent lg:bg-gradient-to-r lg:from-parchment lg:via-parchment/80 lg:to-transparent" />
+          
+          {/* Subtle atmospheric color blooms */}
           <div
             className="absolute inset-0"
             style={{
