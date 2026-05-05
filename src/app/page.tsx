@@ -1,143 +1,201 @@
-import { getArtworks } from '@/lib/db'
-import type { CloudflareEnv } from '@/types'
+// src/app/page.tsx
+import Link from 'next/link'
+import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import ArtworkCard from '@/components/ArtworkCard'
-import Link from 'next/link'
+import { getSeedPaintings } from '@/lib/paintings'
 
-export default async function HomePage() {
-  let featuredArtworks: Awaited<ReturnType<typeof getArtworks>> = []
+export const runtime = 'edge'
 
-  try {
-    // ─── OPENNEXT UPDATE: Access DB directly from process.env ───
-    const db = process.env.DB as any;
-    
-    const artworks = await getArtworks(db, { featured: true })
-    featuredArtworks = artworks.map(a => ({
-      ...a,
-      primary_image_url: a.images?.[0]?.r2_key ?? undefined,
-    }))
-  } catch (error) { 
-    // Log the error instead of silently swallowing it
-    console.error("🔥 HOME PAGE DB ERROR:", error);
-  }
+export default function HomePage() {
+  const all = getSeedPaintings()
+  const featured = all.filter(p => p.featured).slice(0, 8)
+  const heroPainting = featured[0] ?? all[0]
+  const stripPaintings = all.slice(0, 12)
 
   return (
     <>
       <Navbar />
       <main>
 
-        {/* ── HERO ──────────────────────────────────────────────────── */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-parchment" />
-          <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse at 20% 30%, rgba(184,168,204,0.25) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, rgba(143,174,200,0.2) 0%, transparent 55%), radial-gradient(ellipse at 50% 10%, rgba(196,32,64,0.12) 0%, transparent 50%)'
-          }} />
+        {/* ── HERO ──────────────────────────────────────────────────────── */}
+        <section className="relative min-h-screen flex items-center overflow-hidden">
+          {/* Hero image */}
+          {heroPainting && (
+            <Image
+              src={heroPainting.image}
+              alt={heroPainting.title}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          )}
+          {/* Soft parchment veil so the type is legible */}
+          <div className="absolute inset-0 bg-parchment/82" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(ellipse at 25% 35%, rgba(184,168,204,0.18) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, rgba(143,174,200,0.18) 0%, transparent 55%)',
+            }}
+          />
 
-          <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent"
-                style={{ top: `${15 + i * 14}%` }} />
-            ))}
-          </div>
-
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="absolute rounded-full"
-                style={{
-                  width: `${Math.random() * 4 + 2}px`,
-                  height: `${Math.random() * 4 + 2}px`,
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  background: i % 3 === 0 ? '#B8882A' : i % 3 === 1 ? '#D4958A' : '#8FAEC8',
-                  opacity: Math.random() * 0.3 + 0.1,
-                  animation: `float ${Math.random() * 4 + 4}s ease-in-out ${Math.random() * 2}s infinite`,
-                }} />
-            ))}
-          </div>
-
-          <div className="relative z-10 text-center max-w-5xl mx-auto px-6 py-32">
-            <p className="font-body text-xs tracking-[0.45em] uppercase text-dusk/50 mb-6 animate-fade-up opacity-0 animate-delay-100">
-              Professor Emeritus · MFA · Guyana / United States
-            </p>
-            <h1 className="font-display text-ink mb-4 animate-fade-up opacity-0 animate-delay-200"
-              style={{ fontSize: 'clamp(4rem, 12vw, 10rem)', lineHeight: '0.88' }}>
-              Clinton<br />
-              <span className="text-gold-shimmer">Crawford</span>
-            </h1>
-            <div className="flex items-center justify-center gap-6 my-10 animate-fade-up opacity-0 animate-delay-300">
-              <div className="divider-gold w-24" />
-              <p className="font-display text-xl md:text-2xl text-dusk/70 italic tracking-wide">
-                Portals to Other Dimensions
+          <div className="relative z-10 w-full max-w-6xl mx-auto px-6 py-32 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-7">
+              <p className="font-body text-xs tracking-[0.45em] uppercase text-dusk/55 mb-6">
+                Original Paintings · Dr. Clinton Crawford · Guyana / United States
               </p>
-              <div className="divider-gold w-24" />
+              <h1
+                className="font-display text-ink mb-6 leading-[0.88]"
+                style={{ fontSize: 'clamp(4rem, 11vw, 9rem)' }}
+              >
+                Art<br />
+                <span className="text-gold-shimmer">Crawford</span>
+              </h1>
+              <div className="flex items-center gap-5 mb-8">
+                <div className="h-px bg-gold/40 w-20" />
+                <p className="font-display text-xl md:text-2xl text-dusk/75 italic tracking-wide">
+                  A painter&rsquo;s record of the threshold between waking and dream.
+                </p>
+              </div>
+              <p className="font-body text-base md:text-lg text-dusk/70 max-w-xl mb-10 leading-relaxed">
+                The painting practice of Dr. Clinton Crawford — magical realism in
+                acrylic and oil on canvas. Sky and water are interchangeable, land
+                belongs to imagined geographies, and the viewer is invited to step
+                through.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/gallery" className="btn-portal">View the Gallery</Link>
+                <Link href="/inquire" className="btn-ghost">Buy / Inquire</Link>
+              </div>
             </div>
-            <p className="font-body text-base md:text-lg text-dusk/65 max-w-2xl mx-auto mb-12 leading-relaxed animate-fade-up opacity-0 animate-delay-400">
-              Works in magical realism where sky and water are interchangeable,
-              land formations belong to imagined geographies, and the viewer
-              is invited to step through the canvas into an otherworldly consciousness.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up opacity-0 animate-delay-500">
-              <Link href="/gallery" className="btn-portal">Enter the Gallery</Link>
-              <Link href="/about" className="btn-ghost">About the Artist</Link>
-            </div>
-          </div>
 
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30"
-            style={{ animation: 'float 3s ease-in-out infinite' }}>
-            <span className="text-xs text-dusk tracking-[0.3em] uppercase font-body">Scroll</span>
-            <div className="w-px h-10 bg-gradient-to-b from-gold/60 to-transparent" />
+            {/* Floating mini-feature card */}
+            {heroPainting && (
+              <div className="lg:col-span-5">
+                <Link
+                  href={`/artwork/${heroPainting.slug}`}
+                  className="group block glass-card overflow-hidden"
+                >
+                  <div className="relative aspect-[4/5] overflow-hidden">
+                    <Image
+                      src={heroPainting.image}
+                      alt={heroPainting.title}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-5 border-t border-whisper">
+                    <p className="text-xs text-gold tracking-[0.25em] uppercase font-body mb-1">
+                      Featured · {heroPainting.series ?? 'Originals'}
+                    </p>
+                    <p className="font-display text-2xl text-ink group-hover:text-gold transition-colors leading-tight">
+                      {heroPainting.title}
+                    </p>
+                    <p className="text-xs text-dusk/55 font-body mt-1">
+                      {heroPainting.medium} · {heroPainting.dimensions}
+                    </p>
+                  </div>
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* ── ARTIST QUOTE ───────────────────────────────────────────── */}
+        {/* ── ARTIST QUOTE ──────────────────────────────────────────────── */}
         <section className="py-24 px-6 border-y border-whisper relative overflow-hidden">
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(135deg, rgba(196,32,64,0.07) 0%, rgba(232,114,138,0.05) 40%, rgba(196,32,64,0.07) 100%)'
-          }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(196,32,64,0.07) 0%, rgba(232,114,138,0.05) 40%, rgba(196,32,64,0.07) 100%)',
+            }}
+          />
           <div className="absolute inset-0 bg-vellum -z-10" />
-          <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: 'linear-gradient(to bottom, transparent, rgba(196,32,64,0.3), transparent)' }} />
-          <div className="absolute right-0 top-0 bottom-0 w-1" style={{ background: 'linear-gradient(to bottom, transparent, rgba(196,32,64,0.3), transparent)' }} />
           <div className="max-w-4xl mx-auto text-center relative z-10">
-            <div className="font-display leading-none mb-4 select-none" style={{ fontSize: '5rem', color: 'rgba(196,32,64,0.2)' }}>"</div>
-            <blockquote className="font-display text-2xl md:text-4xl italic leading-snug mb-6" style={{ color: 'rgba(44,31,20,0.78)' }}>
+            <div
+              className="font-display leading-none mb-4 select-none"
+              style={{ fontSize: '5rem', color: 'rgba(196,32,64,0.2)' }}
+            >
+              &ldquo;
+            </div>
+            <blockquote
+              className="font-display text-2xl md:text-4xl italic leading-snug mb-6"
+              style={{ color: 'rgba(44,31,20,0.78)' }}
+            >
               Generally I let my canvas and initial brush strokes guide my composition.
               The images evince from the uncensored interplay with my dream consciousness
               state and my lived experiences.
             </blockquote>
-            <div className="w-16 h-px mx-auto mb-5" style={{ background: 'linear-gradient(to right, transparent, rgba(196,32,64,0.5), transparent)' }} />
-            <cite className="text-sm tracking-[0.2em] uppercase font-body not-italic" style={{ color: 'rgba(196,32,64,0.6)' }}>
+            <div
+              className="w-16 h-px mx-auto mb-5"
+              style={{ background: 'linear-gradient(to right, transparent, rgba(196,32,64,0.5), transparent)' }}
+            />
+            <cite
+              className="text-sm tracking-[0.2em] uppercase font-body not-italic"
+              style={{ color: 'rgba(196,32,64,0.6)' }}
+            >
               — Dr. Clinton Crawford
             </cite>
           </div>
         </section>
 
-        {/* ── FEATURED WORKS ─────────────────────────────────────────── */}
+        {/* ── FEATURED WORKS ───────────────────────────────────────────── */}
         <section className="py-24 px-6 max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-6">
             <div>
-              <p className="text-xs text-gold tracking-[0.3em] uppercase font-body mb-3">Current Series</p>
-              <h2 className="font-display text-5xl md:text-7xl text-ink leading-none">Featured Works</h2>
+              <p className="text-xs text-gold tracking-[0.3em] uppercase font-body mb-3">
+                Selected Paintings
+              </p>
+              <h2 className="font-display text-5xl md:text-7xl text-ink leading-none">
+                Featured Works
+              </h2>
             </div>
-            <Link href="/gallery" className="btn-ghost shrink-0">View All Works →</Link>
+            <Link href="/gallery" className="btn-ghost shrink-0">
+              View All 31 Paintings →
+            </Link>
           </div>
 
-          {featuredArtworks.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {featuredArtworks.map((artwork, i) => (
-                <ArtworkCard key={artwork.id} artwork={artwork} priority={i < 3} />
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="aspect-[3/4] bg-vellum border border-whisper animate-pulse" />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {featured.map((p, i) => (
+              <Link
+                key={p.id}
+                href={`/artwork/${p.slug}`}
+                className="group block bg-vellum border border-whisper overflow-hidden transition-all duration-500 hover:border-gold/30"
+              >
+                <div className="relative aspect-[3/4] overflow-hidden">
+                  <Image
+                    src={p.image}
+                    alt={p.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    priority={i < 3}
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="badge-available">Available</span>
+                  </div>
+                </div>
+                <div className="p-5 border-t border-whisper">
+                  <p className="font-display text-xl text-ink group-hover:text-gold transition-colors leading-tight line-clamp-2">
+                    {p.title}
+                  </p>
+                  <p className="text-xs text-dusk/55 font-body mt-1">
+                    {p.medium} · {p.year ?? 'n.d.'}
+                  </p>
+                  <div className="flex items-center justify-between mt-3">
+                    <p className="text-xs text-dusk/45 font-body">{p.dimensions}</p>
+                    <p className="font-display text-base text-gold italic">Price upon request</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </section>
 
-        {/* ── MAGICAL REALISM SECTION ─────────────────────────────────── */}
+        {/* ── MAGICAL REALISM SECTION ──────────────────────────────────── */}
         <section className="py-24 px-6 border-t border-whisper bg-vellum/50">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -159,28 +217,65 @@ export default async function HomePage() {
                 <Link href="/about" className="btn-ghost">Read the Artist Statement →</Link>
               </div>
               <div className="glass-card p-10">
-                <h3 className="font-display text-3xl text-gold mb-2">Portals to Other Dimensions</h3>
-                <p className="text-xs text-dusk/50 tracking-widest uppercase mb-6 font-body">Series of Twelve · Acrylics on Canvas</p>
+                <h3 className="font-display text-3xl text-gold mb-2">Three Series, One Practice</h3>
+                <p className="text-xs text-dusk/50 tracking-widest uppercase mb-6 font-body">
+                  Portals · Symbolic Logic · Land of Waters
+                </p>
                 <p className="text-dusk/70 font-body leading-relaxed mb-8">
-                  Each work illustrates a threshold — a portal — between the known world
-                  and realms that exist only in the space between waking and dreaming.
+                  Across thirty-one current works, the studio moves between literal
+                  thresholds, recurring symbols, and the early landscapes of the
+                  artist&rsquo;s Atlantic-coast childhood.
                 </p>
                 <div className="grid grid-cols-3 gap-6 border-t border-whisper pt-8">
-                  {[{ label: 'Works', value: '12' }, { label: 'Medium', value: 'Acrylic' }].map(stat => (
-                    <div key={stat.label}>
-                      <div className="font-display text-3xl text-ink">{stat.value}</div>
-                      <div className="text-xs text-dusk/50 tracking-widest uppercase font-body mt-1">{stat.label}</div>
-                    </div>
-                  ))}
+                  <div>
+                    <div className="font-display text-3xl text-ink">31</div>
+                    <div className="text-xs text-dusk/50 tracking-widest uppercase font-body mt-1">Paintings</div>
+                  </div>
+                  <div>
+                    <div className="font-display text-3xl text-ink">3</div>
+                    <div className="text-xs text-dusk/50 tracking-widest uppercase font-body mt-1">Series</div>
+                  </div>
+                  <div>
+                    <div className="font-display text-3xl text-ink">∞</div>
+                    <div className="text-xs text-dusk/50 tracking-widest uppercase font-body mt-1">Originals</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── PROVENANCE STRIP ────────────────────────────────────────── */}
-        <section className="py-14 px-6 border-y border-whisper overflow-hidden bg-parchment">
-          <div className="flex items-center gap-16 whitespace-nowrap" style={{ animation: 'marquee 24s linear infinite' }}>
+        {/* ── PAINTING STRIP ───────────────────────────────────────────── */}
+        <section className="py-12 border-y border-whisper bg-parchment overflow-hidden">
+          <div className="flex gap-4 overflow-x-auto px-6 max-w-[100vw]" style={{ scrollbarWidth: 'none' }}>
+            {stripPaintings.map(p => (
+              <Link
+                key={p.id}
+                href={`/artwork/${p.slug}`}
+                className="relative flex-shrink-0 w-44 h-56 group block bg-vellum border border-whisper overflow-hidden"
+              >
+                <Image
+                  src={p.image}
+                  alt={p.title}
+                  fill
+                  sizes="176px"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-parchment font-display text-sm leading-tight line-clamp-2">{p.title}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* ── PROVENANCE STRIP ─────────────────────────────────────────── */}
+        <section className="py-14 px-6 border-b border-whisper overflow-hidden bg-parchment">
+          <div
+            className="flex items-center gap-16 whitespace-nowrap"
+            style={{ animation: 'marquee 24s linear infinite' }}
+          >
             {[
               'Born in Guyana, South America','·','MFA · UC Santa Barbara','·',
               'Professor Emeritus','·','Specialist in Classical African Civilizations','·',
@@ -189,21 +284,36 @@ export default async function HomePage() {
               'Professor Emeritus','·','Specialist in Classical African Civilizations','·',
               'Travels to the Nile Valley','·','Self-Taught from Age 7','·','Works in Magical Realism','·',
             ].map((item, i) => (
-              <span key={i} className={`font-display text-lg shrink-0 ${item === '·' ? 'text-gold' : 'text-dusk/30'}`}>{item}</span>
+              <span
+                key={i}
+                className={`font-display text-lg shrink-0 ${item === '·' ? 'text-gold' : 'text-dusk/30'}`}
+              >
+                {item}
+              </span>
             ))}
           </div>
         </section>
 
-        {/* ── ACQUISITION CTA ─────────────────────────────────────────── */}
+        {/* ── ACQUISITION CTA ──────────────────────────────────────────── */}
         <section className="py-32 px-6 text-center relative overflow-hidden">
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, rgba(212,149,138,0.12) 0%, transparent 70%)' }} />
+          <div
+            className="absolute inset-0"
+            style={{ background: 'radial-gradient(ellipse at center, rgba(212,149,138,0.12) 0%, transparent 70%)' }}
+          />
           <div className="relative z-10 max-w-3xl mx-auto">
-            <p className="text-xs text-gold tracking-[0.4em] uppercase font-body mb-6">Acquire a Work</p>
-            <h2 className="font-display text-5xl md:text-7xl text-ink mb-6">Own a Portal</h2>
-            <p className="text-dusk/60 font-body max-w-xl mx-auto mb-10 leading-relaxed">
-              Each piece is an original, signed work. Certificates of authenticity included. Worldwide shipping with full insurance.
+            <p className="text-xs text-gold tracking-[0.4em] uppercase font-body mb-6">
+              Acquire a Work
             </p>
-            <Link href="/gallery" className="btn-portal">Browse Available Works</Link>
+            <h2 className="font-display text-5xl md:text-7xl text-ink mb-6">Own a Crawford</h2>
+            <p className="text-dusk/60 font-body max-w-xl mx-auto mb-10 leading-relaxed">
+              Each painting is offered at price upon request. Tell the studio which work
+              has caught your eye — pricing, framing, shipping and commissions are all handled
+              directly with Dr. Crawford&rsquo;s studio.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/gallery" className="btn-portal">Browse the Gallery</Link>
+              <Link href="/inquire" className="btn-ghost">Send an Inquiry</Link>
+            </div>
           </div>
         </section>
 

@@ -1,13 +1,15 @@
 // src/app/about/page.tsx
-
 import type { Metadata } from 'next'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 
+export const runtime = 'edge'
+
 export const metadata: Metadata = {
   title: 'About the Artist',
-  description: 'Dr. Clinton Crawford — Professor Emeritus, MFA, painter of magical realism. Born in Guyana. Self-taught from age 7. Works explore portals between real and imagined worlds.',
+  description:
+    'Art Crawford is the painting practice of Dr. Clinton Crawford — Professor Emeritus, MFA, painter of magical realism. Born in Guyana. Self-taught from age 7. Works explore portals between real and imagined worlds.',
 }
 
 export default function AboutPage() {
@@ -18,15 +20,14 @@ export default function AboutPage() {
 
         {/* ── HERO ──────────────────────────────────────────────────── */}
         <section className="relative py-24 px-6 overflow-hidden">
-          <div className="absolute inset-0 bg-hero-texture opacity-40" />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-gold/20 via-gold/5 to-transparent" />
           <div className="relative z-10 max-w-4xl mx-auto text-center">
-            <p className="text-xs text-gold tracking-[0.4em] uppercase font-body mb-6">The Artist</p>
+            <p className="text-xs text-gold tracking-[0.4em] uppercase font-body mb-6">The Artist Behind Art Crawford</p>
             <h1 className="font-display text-7xl md:text-9xl text-ink mb-4 leading-none">
               Dr. Clinton<br />
               <span className="text-gold-shimmer">Crawford</span>
             </h1>
-            <p className="font-display text-xl text-dusk/60 italic mt-6">
+            <p className="font-display text-xl text-dusk/65 italic mt-6">
               Professor Emeritus · MFA · Painter · Guyana / United States
             </p>
           </div>
@@ -37,17 +38,15 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
 
             {/* Sidebar */}
-            <aside className="lg:col-span-4 sticky top-28">
-              {/* Portrait placeholder */}
+            <aside className="lg:col-span-4 lg:sticky lg:top-28">
               <div className="aspect-[3/4] bg-vellum border border-gold/15 mb-6 relative overflow-hidden flex items-end">
-                <div className="absolute inset-0 bg-gradient-to-br from-nebula/30 via-cobalt/20 to-void" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blush/15 via-celestial/15 to-gold/10" />
                 <div className="relative z-10 p-6">
                   <p className="font-display text-2xl text-ink">Dr. Clinton Crawford</p>
-                  <p className="text-xs text-dusk/50 tracking-widest uppercase font-body mt-1">Born, Guyana, S.A.</p>
+                  <p className="text-xs text-dusk/55 tracking-widest uppercase font-body mt-1">Born, Guyana, S.A.</p>
                 </div>
               </div>
 
-              {/* Credentials */}
               <div className="glass-card p-6 space-y-4">
                 <h3 className="font-display text-xl text-gold">Credentials</h3>
                 {[
@@ -60,7 +59,7 @@ export default function AboutPage() {
                   { label: 'Movement', value: 'Magical Realism' },
                 ].map(c => (
                   <div key={c.label} className="flex justify-between text-sm border-b border-whisper pb-3">
-                    <span className="text-dusk/50 font-body tracking-wide">{c.label}</span>
+                    <span className="text-dusk/55 font-body tracking-wide">{c.label}</span>
                     <span className="text-ink/80 font-body text-right max-w-[55%]">{c.value}</span>
                   </div>
                 ))}
@@ -76,7 +75,7 @@ export default function AboutPage() {
                   Born into Humble Beginnings,<br />
                   <span className="text-blush italic">with a Gift</span>
                 </h2>
-                <div className="space-y-4 text-ink/65 font-body leading-relaxed">
+                <div className="space-y-4 text-ink/70 font-body leading-relaxed">
                   <p>
                     I was born into very humble beginnings with my gift and insights. At age 8 or 9,
                     my grandmother who raised me bought a set of paints and brushes — she was tired
@@ -105,7 +104,7 @@ export default function AboutPage() {
                   From the Atlantic Coast<br />
                   <span className="text-celestial italic">to Santa Barbara</span>
                 </h2>
-                <div className="space-y-4 text-ink/65 font-body leading-relaxed">
+                <div className="space-y-4 text-ink/70 font-body leading-relaxed">
                   <p>
                     My early career was identified with landscapes and seascapes. I was born on the
                     Atlantic coast of South America in a small country called Guyana — land of waters.
@@ -131,10 +130,10 @@ export default function AboutPage() {
               <div>
                 <p className="text-xs text-gold tracking-[0.3em] uppercase font-body mb-4">The Philosophy</p>
                 <h2 className="font-display text-4xl text-ink mb-6">
-                  Symbolic Logic &<br />
+                  Symbolic Logic &amp;<br />
                   <span className="text-ember italic">Dream Consciousness</span>
                 </h2>
-                <div className="space-y-4 text-ink/65 font-body leading-relaxed">
+                <div className="space-y-4 text-ink/70 font-body leading-relaxed">
                   <p>
                     The creation of symbolic logic took center stage as I reflected on objects I was
                     familiar with but turned them into symbols of how I viewed the world — in a word,
@@ -144,9 +143,9 @@ export default function AboutPage() {
                   </p>
                   <p>
                     The vivid, vibrant colors in my work are influenced by being born near the equator,
-                    where light plays a dominant role in one's sensibilities. My palette is reflective
-                    of that experience, even though I am more than four decades removed from that
-                    tropical sphere.
+                    where light plays a dominant role in one&rsquo;s sensibilities. My palette is
+                    reflective of that experience, even though I am more than four decades removed from
+                    that tropical sphere.
                   </p>
                   <p>
                     Generally I let my canvas and initial brush strokes guide my composition. The
@@ -159,14 +158,15 @@ export default function AboutPage() {
 
               <div className="w-full h-px bg-gradient-to-r from-gold/20 via-gold/10 to-transparent" />
 
-              {/* Artist Statement */}
               <div className="glass-card p-8">
                 <p className="text-xs text-gold tracking-[0.3em] uppercase font-body mb-4">Artist Statement</p>
                 <div className="space-y-4 text-dusk/70 font-body leading-relaxed">
                   <p>
-                    These works belong to a series of twelve that illustrate <em>Portals to Other
-                    Dimensions</em>. I am aligned with a literary and artistic philosophical tradition
-                    called Magical Realism: a juxtaposition of real and imagined worlds.
+                    The works gathered here under the Art Crawford name belong to a body of paintings
+                    that illustrate <em>Portals to Other Dimensions</em>, alongside earlier landscapes
+                    from the <em>Land of Waters</em> series and the <em>Symbolic Logic</em> studies.
+                    They are aligned with a literary and artistic philosophical tradition called
+                    Magical Realism: a juxtaposition of real and imagined worlds.
                   </p>
                   <p>
                     Born in Guyana, South America, I have been a painter from the early age of seven.
@@ -180,25 +180,22 @@ export default function AboutPage() {
                     Without water, there is no life.
                   </p>
                   <p className="font-display text-xl text-ink/80 italic border-l-2 border-gold/30 pl-4 ml-0">
-                    "Now in my mid-seventies, I continue to learn and heed the voice from within.
+                    &ldquo;Now in my mid-seventies, I continue to learn and heed the voice from within.
                     I have learnt to let go and not insist on controlling the outcome.
-                    It's the most liberating feeling one can experience."
+                    It&rsquo;s the most liberating feeling one can experience.&rdquo;
                   </p>
                 </div>
                 <div className="mt-6 pt-6 border-t border-whisper">
                   <p className="font-display text-xl text-gold">Dr. Clinton Crawford</p>
-                  <p className="text-xs text-dusk/50 font-body tracking-widest uppercase mt-1">
+                  <p className="text-xs text-dusk/55 font-body tracking-widest uppercase mt-1">
                     Professor Emeritus · Painter · Scholar
                   </p>
                 </div>
               </div>
 
-              {/* CTA */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link href="/gallery" className="btn-portal">Browse the Gallery</Link>
-                <a href="mailto:inquiries@clintoncrawfordart.com" className="btn-ghost">
-                  Commission a Work
-                </a>
+                <Link href="/inquire" className="btn-ghost">Buy / Inquire / Commission</Link>
               </div>
 
             </div>

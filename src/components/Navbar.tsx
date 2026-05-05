@@ -3,11 +3,9 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { useCartStore } from '@/components/CartProvider'
 
 export default function Navbar() {
   const pathname = usePathname()
-  const count = useCartStore(s => s.count)()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -20,6 +18,7 @@ export default function Navbar() {
   const links = [
     { href: '/gallery', label: 'Gallery' },
     { href: '/about', label: 'Artist' },
+    { href: '/inquire', label: 'Inquire' },
   ]
 
   return (
@@ -32,10 +31,10 @@ export default function Navbar() {
 
         <Link href="/" className="group flex flex-col">
           <span className="font-display text-2xl text-ink tracking-wide group-hover:text-gold transition-colors duration-300">
-            Clinton Crawford
+            Art Crawford
           </span>
           <span className="text-xs text-dusk/60 tracking-[0.2em] uppercase font-body -mt-0.5">
-            Portals to Other Dimensions
+            Original Paintings · Dr. Clinton Crawford
           </span>
         </Link>
 
@@ -48,16 +47,6 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link href="/cart"
-            className="relative flex items-center gap-2 text-ink/60 hover:text-gold transition-colors duration-200"
-            aria-label="Shopping cart">
-            <CartIcon />
-            {count > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-ink text-parchment text-xs font-body font-bold rounded-full">
-                {count}
-              </span>
-            )}
-          </Link>
         </div>
 
         <button className="md:hidden text-ink/60 hover:text-gold transition-colors"
@@ -75,24 +64,12 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link href="/cart"
-            className="flex items-center gap-2 font-display text-2xl text-ink/80 hover:text-gold transition-colors"
-            onClick={() => setMenuOpen(false)}>
-            Cart {count > 0 && <span className="text-gold text-lg">({count})</span>}
-          </Link>
         </div>
       )}
     </header>
   )
 }
 
-function CartIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" />
-    </svg>
-  )
-}
 function MenuIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">

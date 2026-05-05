@@ -1,21 +1,29 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next'
 import './globals.css'
-import { CartProvider } from '@/components/CartProvider'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Dr. Clinton Crawford | Portals to Other Dimensions',
-    template: '%s | Clinton Crawford Art',
+    default: 'Art Crawford | Original Paintings by Dr. Clinton Crawford',
+    template: '%s | Art Crawford',
   },
   description:
-    'Original paintings by Dr. Clinton Crawford — Professor Emeritus, MFA. Works in magical realism exploring the threshold between the real and the otherworldly. Born in Guyana.',
-  keywords: ['Clinton Crawford', 'magical realism', 'fine art', 'paintings', 'Guyana artist', 'Portals to Other Dimensions'],
+    'Art Crawford — the painting practice of Dr. Clinton Crawford. Original works in magical realism exploring the threshold between the real and the otherworldly. Born in Guyana.',
+  keywords: [
+    'Art Crawford',
+    'Clinton Crawford',
+    'magical realism',
+    'fine art',
+    'original paintings',
+    'Guyana artist',
+    'Portals to Other Dimensions',
+  ],
   openGraph: {
     type: 'website',
-    siteName: 'Clinton Crawford Art',
-    title: 'Dr. Clinton Crawford | Portals to Other Dimensions',
-    description: 'Original paintings exploring the threshold between real and imagined worlds.',
+    siteName: 'Art Crawford',
+    title: 'Art Crawford | Original Paintings by Dr. Clinton Crawford',
+    description:
+      'Original paintings exploring the threshold between real and imagined worlds.',
   },
 }
 
@@ -38,9 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}</style>
       </head>
       <body className="bg-parchment text-ink font-body antialiased">
-        <CartProvider>
-          {children}
-        </CartProvider>
+        {children}
       </body>
     </html>
   )

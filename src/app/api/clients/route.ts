@@ -1,16 +1,16 @@
 // src/app/api/clients/route.ts
-export const dynamic = 'force-dynamic';
+// Collector CRM has been retired. Inquiries are the new collector-of-record.
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
-import { getClients } from '@/lib/db'
-import type { CloudflareEnv } from '@/types'
 
 export async function GET() {
-  try {
-      // NEW (Add this)
-      const env = process.env as any;
-      const clients = await getClients(env.DB)
-    return NextResponse.json({ clients })
-  } catch {
-    return NextResponse.json({ error: 'Failed' }, { status: 500 })
-  }
+  return NextResponse.json(
+    {
+      error:
+        'The collector CRM is being rebuilt around inquiries. See /admin/inquiries for the new view.',
+    },
+    { status: 410 }
+  )
 }

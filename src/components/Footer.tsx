@@ -9,11 +9,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
 
           <div>
-            <h3 className="font-display text-3xl text-ink mb-2">Clinton Crawford</h3>
-            <p className="text-xs text-dusk/50 tracking-[0.25em] uppercase mb-4">Professor Emeritus · MFA · Artist</p>
+            <h3 className="font-display text-3xl text-ink mb-2">Art Crawford</h3>
+            <p className="text-xs text-dusk/50 tracking-[0.25em] uppercase mb-4">Dr. Clinton Crawford · Painter</p>
             <p className="text-sm text-dusk/70 font-body leading-relaxed max-w-xs">
-              Born in Guyana, South America. Works in magical realism exploring
-              portals between real and imagined worlds.
+              Original paintings in magical realism. Born in Guyana, painting from
+              the equator out — into the threshold between waking and dream.
             </p>
           </div>
 
@@ -24,7 +24,7 @@ export default function Footer() {
                 { href: '/gallery', label: 'Gallery' },
                 { href: '/gallery?series=Portals+to+Other+Dimensions', label: 'Portals Series' },
                 { href: '/about', label: 'About the Artist' },
-                { href: '/cart', label: 'Cart' },
+                { href: '/inquire', label: 'Inquire about a Work' },
               ].map(link => (
                 <li key={link.href}>
                   <Link href={link.href}
@@ -39,11 +39,12 @@ export default function Footer() {
           <div>
             <h4 className="font-display text-xl text-gold mb-4 tracking-wide">Acquire a Work</h4>
             <p className="text-sm text-dusk/60 font-body mb-4 leading-relaxed">
-              Interested in a piece or a commission? All inquiries are handled with care.
+              Each painting is offered at price upon request. Inquiries, commissions
+              and studio visits are handled with care.
             </p>
-            <a href="mailto:inquiries@clintoncrawfordart.com"
+            <a href="mailto:info@artcrawford.com"
               className="inline-flex items-center gap-2 text-sm text-blush hover:text-gold transition-colors duration-200">
-              <span>inquiries@clintoncrawfordart.com</span><span>→</span>
+              <span>info@artcrawford.com</span><span>→</span>
             </a>
             <p className="text-xs text-dusk/40 mt-4 font-body">Based in the United States. Ships worldwide.</p>
           </div>
@@ -53,10 +54,10 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-dusk/40 font-body tracking-wide">
-            © {new Date().getFullYear()} Dr. Clinton Crawford. All rights reserved.
+            © {new Date().getFullYear()} Art Crawford · Dr. Clinton Crawford. All rights reserved.
           </p>
           <p className="text-xs text-dusk/35 font-body italic">
-            "I have learnt to let go and not insist on controlling the outcome."
+            &ldquo;I have learnt to let go and not insist on controlling the outcome.&rdquo;
           </p>
         </div>
       </div>

@@ -1,15 +1,13 @@
-name = "clinton-crawford-art"
+name = "art-crawford-gallery"
 compatibility_date = "2024-12-30"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
 
-# ─── CLOUDFLARE D1 DATABASE ──────────────────────────────────────────────────
-[[d1_databases]]
-binding = "DB"
-database_name = "clinton-art-db"
-database_id = "d5f5820c-e018-4d6c-a0bf-6f6b3a493b1a"
-
 # ─── ENVIRONMENT VARIABLES ───────────────────────────────────────────────────
+# ADMIN_PASSWORD          — required to log into /admin
+# RESEND_API_KEY          — optional, sends inquiries through Resend
+# RESEND_FROM             — optional, "From" header (default: Art Crawford <inquiries@artcrawford.com>)
+# INQUIRY_WEBHOOK_URL     — optional fallback webhook if Resend isn't configured
 [vars]
-NEXT_PUBLIC_SITE_NAME = "Clinton Crawford Art"
+NEXT_PUBLIC_SITE_NAME = "Art Crawford"
 NEXT_PUBLIC_ARTIST_NAME = "Dr. Clinton Crawford"

@@ -1,41 +1,40 @@
 // src/app/api/artworks/route.ts
-export const dynamic = 'force-dynamic';
+//
+// Public read endpoint. Returns the seed catalogue from src/data/paintings.json.
+// Admin writes happen entirely in the browser via localStorage — see
+// src/app/admin/inventory/page.tsx — so POST is a no-op for now.
+
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
-import { getArtworks, createArtwork } from '@/lib/db'
-import type { CloudflareEnv, Artwork } from '@/types'
+import { getSeedPaintings } from '@/lib/paintings'
 
 export async function GET(request: NextRequest) {
-    try {
-        // NEW (Add this)
-        const env = process.env as any;        const { searchParams } = new URL(request.url)
+  try {
+    const { searchParams } = new URL(request.url)
+    const status = searchParams.get('status')
+    const series = searchParams.get('series')
+    const featured = searchParams.get('featured')
 
-        const status = searchParams.get('status')
-        const series = searchParams.get('series')
+    let list = getSeedPaintings()
+    if (status) list = list.filter(p => p.status === status)
+    if (series) list = list.filter(p => p.series === series)
+    if (featured === 'true') list = list.filter(p => p.featured)
 
-        const artworks = await getArtworks(env.DB, {
-            status: status || undefined,
-            series: series || undefined
-        })
-
-        return NextResponse.json({ artworks })
-    } catch (error) {
-        console.error('GET Artworks Error:', error)
-        return NextResponse.json({ error: 'Failed to fetch artworks' }, { status: 500 })
-    }
+    return NextResponse.json({ artworks: list })
+  } catch (error) {
+    console.error('GET artworks error:', error)
+    return NextResponse.json({ error: 'Failed to fetch artworks' }, { status: 500 })
+  }
 }
 
-export async function POST(request: NextRequest) {
-    try {
-        // NEW (Add this)
-        const env = process.env as any;
-        // THE FIX: Explicitly cast the body as Partial<Artwork> 
-        // to resolve the 'unknown' type error
-        const body = (await request.json()) as Partial<Artwork>
-
-        const result = await createArtwork(env.DB, body)
-        return NextResponse.json(result)
-    } catch (error) {
-        console.error('POST Artwork Error:', error)
-        return NextResponse.json({ error: 'Failed to create artwork' }, { status: 500 })
-    }
+export async function POST() {
+  return NextResponse.json(
+    {
+      error:
+        'The public artwork API is read-only. Manage paintings from /admin/inventory and re-publish src/data/paintings.json.',
+    },
+    { status: 405 }
+  )
 }

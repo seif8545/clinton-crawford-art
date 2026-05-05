@@ -1,15 +1,18 @@
 // src/app/api/admin/login/route.ts
-export const dynamic = 'force-dynamic';
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
-import type { CloudflareEnv } from '@/types'
+
+const DEFAULT_PASSWORD = 'studio'
 
 export async function POST(request: NextRequest) {
   try {
-      // NEW (Add this)
-      const env = process.env as any;
-      const { password } = (await request.json()) as { password?: string }
+    const env = process.env as Record<string, string | undefined>
+    const expected = env.ADMIN_PASSWORD ?? DEFAULT_PASSWORD
 
-    if (!password || password !== env.ADMIN_PASSWORD) {
+    const { password } = (await request.json()) as { password?: string }
+    if (!password || password !== expected) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
     }
 

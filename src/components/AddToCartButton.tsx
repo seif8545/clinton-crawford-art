@@ -1,62 +1,29 @@
-'use client'
 // src/components/AddToCartButton.tsx
-import { useState } from 'react'
-import { useCartStore } from '@/components/CartProvider'
+// Compatibility shim — the cart has been replaced with an inquiry flow.
+// This re-exports InquireButton so any older imports continue to render the
+// new "Buy / Inquire" button without breaking the build.
+import InquireButton from '@/components/InquireButton'
 import type { Artwork } from '@/types'
+import type { Painting } from '@/lib/paintings'
 
-interface Props {
-  artwork: Artwork
-}
+interface Props { artwork: Artwork }
 
 export default function AddToCartButton({ artwork }: Props) {
-  const { addItem, items } = useCartStore()
-  const [added, setAdded] = useState(false)
-
-  const inCart = items.some(i => i.artwork_id === artwork.id)
-
-  function handleAdd() {
-    addItem({
-      artwork_id: artwork.id,
-      title: artwork.title,
-      price: artwork.price,
-      quantity: 1,
-      primary_image_url: artwork.primary_image_url,
-      dimensions: artwork.dimensions,
-      medium: artwork.medium,
-    })
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2500)
+  const painting: Painting = {
+    id: artwork.id,
+    slug: artwork.slug,
+    title: artwork.title,
+    year: artwork.year,
+    medium: artwork.medium,
+    dimensions: artwork.dimensions,
+    series: artwork.series,
+    description: artwork.description,
+    price: artwork.price,
+    price_label: artwork.price > 0 ? null : 'Price upon request',
+    status: artwork.status,
+    featured: (artwork.featured ? 1 : 0) as 0 | 1,
+    sort_order: artwork.sort_order,
+    image: artwork.primary_image_url ?? '',
   }
-
-  if (artwork.status !== 'available') {
-    return (
-      <div className="w-full py-4 text-center font-display text-lg tracking-widest uppercase text-dusk/50 border border-mauve/20">
-        {artwork.status === 'sold' ? 'Sold' : 'Currently Reserved'}
-      </div>
-    )
-  }
-
-  if (inCart) {
-    return (
-      <div className="flex flex-col gap-3 w-full">
-        <div className="w-full py-4 text-center font-display text-lg tracking-widest uppercase text-gold border border-gold/30 bg-gold/8">
-          ✓ In Your Collection
-        </div>
-        <a href="/cart" className="text-center text-sm text-dusk/60 hover:text-ivory transition-colors underline underline-offset-4">
-          View Cart
-        </a>
-      </div>
-    )
-  }
-
-  return (
-    <button
-      onClick={handleAdd}
-      className={`w-full btn-portal text-center justify-center transition-all duration-300 ${
-        added ? 'opacity-80' : ''
-      }`}
-    >
-      {added ? '✓ Added to Collection' : 'Add to Collection'}
-    </button>
-  )
+  return <InquireButton painting={painting} />
 }

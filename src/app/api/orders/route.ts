@@ -1,43 +1,22 @@
-// src/app/api/orders/[id]/route.ts
-export const dynamic = 'force-dynamic';
-import { NextRequest, NextResponse } from 'next/server'
-import { getOrderById, updateOrderStatus } from '@/lib/db'
-import type { CloudflareEnv } from '@/types'
+// src/app/api/orders/route.ts
+// The order pipeline has been retired in favour of an inquiry flow.
+// These stubs keep the route building on the edge runtime so old links still
+// answer with a useful 410 Gone response.
 
-type Ctx = { params: Promise<{ id: string }> }
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
-export async function GET(_: NextRequest, ctx: Ctx) {
-    try {
-        const { id } = await ctx.params
-        // NEW (Add this)
-        const env = process.env as any;        const order = await getOrderById(env.DB, parseInt(id))
+import { NextResponse } from 'next/server'
 
-        if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-
-        return NextResponse.json({ order })
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed' }, { status: 500 })
-    }
+const GONE = {
+  error:
+    'Orders have been retired. Buyers should submit a private inquiry at /inquire instead.',
 }
 
-export async function PATCH(request: NextRequest, ctx: Ctx) {
-    try {
-        const { id } = await ctx.params
-        // NEW (Add this)
-        const env = process.env as any;
-        // FIX: Explicitly cast the JSON body to access the status property
-        const body = (await request.json()) as { status?: string }
-        const status = body.status
+export async function GET() {
+  return NextResponse.json(GONE, { status: 410 })
+}
 
-        const validStatuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded']
-
-        if (!status || !validStatuses.includes(status)) {
-            return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
-        }
-
-        await updateOrderStatus(env.DB, parseInt(id), status)
-        return NextResponse.json({ success: true })
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to update' }, { status: 500 })
-    }
+export async function POST() {
+  return NextResponse.json(GONE, { status: 410 })
 }

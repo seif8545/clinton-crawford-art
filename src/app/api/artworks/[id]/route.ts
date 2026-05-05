@@ -1,8 +1,9 @@
 // src/app/api/artworks/[id]/route.ts
-export const dynamic = 'force-dynamic';
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
-import { getArtworkById, updateArtwork, deleteArtwork } from '@/lib/db'
-import type { CloudflareEnv, Artwork } from '@/types'
+import { getSeedPaintings, findById, findBySlug } from '@/lib/paintings'
 
 export async function GET(
   _: NextRequest,
@@ -10,40 +11,28 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-      // NEW (Add this)
-      const env = process.env as any;    const artwork = await getArtworkById(env.DB, parseInt(id))
-    if (!artwork) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-    return NextResponse.json({ artwork })
+    const list = getSeedPaintings()
+    const numeric = Number.parseInt(id, 10)
+    const painting = Number.isFinite(numeric)
+      ? findById(list, numeric) ?? findBySlug(list, id)
+      : findBySlug(list, id)
+    if (!painting) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    return NextResponse.json({ artwork: painting })
   } catch {
     return NextResponse.json({ error: 'Failed' }, { status: 500 })
   }
 }
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params
-      // NEW (Add this)
-      const env = process.env as any;    const body = await request.json() as Partial<Artwork>
-    await updateArtwork(env.DB, parseInt(id), body)
-    return NextResponse.json({ success: true })
-  } catch {
-    return NextResponse.json({ error: 'Failed to update' }, { status: 500 })
-  }
+export async function PATCH() {
+  return NextResponse.json(
+    { error: 'Edit paintings from /admin/inventory and re-publish src/data/paintings.json.' },
+    { status: 405 }
+  )
 }
 
-export async function DELETE(
-  _: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params
-      // NEW (Add this)
-      const env = process.env as any;    await deleteArtwork(env.DB, parseInt(id))
-    return NextResponse.json({ success: true })
-  } catch {
-    return NextResponse.json({ error: 'Failed to delete' }, { status: 500 })
-  }
+export async function DELETE() {
+  return NextResponse.json(
+    { error: 'Edit paintings from /admin/inventory and re-publish src/data/paintings.json.' },
+    { status: 405 }
+  )
 }
