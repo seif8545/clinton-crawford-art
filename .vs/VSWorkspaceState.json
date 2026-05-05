@@ -4,9 +4,14 @@
     "\\src",
     "\\src\\app",
     "\\src\\app\\api",
+    "\\src\\app\\api\\admin",
+    "\\src\\app\\api\\admin\\login",
     "\\src\\app\\api\\artworks",
-    "\\src\\app\\api\\orders"
+    "\\src\\app\\api\\artworks\\[id]",
+    "\\src\\app\\api\\clients",
+    "\\src\\app\\api\\orders",
+    "\\src\\app\\api\\orders\\[id]"
   ],
-  "SelectedNode": "\\src\\app\\api\\orders\\route.ts",
+  "SelectedNode": "\\wrangler.toml",
   "PreviewInSolutionExplorer": false
 }

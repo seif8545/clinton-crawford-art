@@ -3,24 +3,52 @@
   "WorkspaceRootPath": "C:\\Users\\DELL\\Downloads\\clintonart\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\api\\orders\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\wrangler.toml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:wrangler.toml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\about\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\about\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\admin\\layout.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\admin\\layout.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\checkout\\success\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\checkout\\success\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\artworks\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\api\\artworks\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\tailwind.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:tailwind.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\artworks\\[id]\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\api\\artworks\\[id]\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\clients\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\api\\clients\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\globals.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\globals.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\admin\\login\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\api\\admin\\login\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\api\\orders\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\upload\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\api\\upload\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\artwork\\[id]\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\artwork\\[id]\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\[id]\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\api\\orders\\[id]\\route.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,70 +58,164 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 11,
               "Title": "route.ts",
-              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\route.ts",
-              "RelativeDocumentMoniker": "src\\app\\api\\orders\\route.ts",
-              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\route.ts",
-              "RelativeToolTip": "src\\app\\api\\orders\\route.ts",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAAwCQAAAABAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\[id]\\route.ts",
+              "RelativeDocumentMoniker": "src\\app\\api\\orders\\[id]\\route.ts",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\[id]\\route.ts",
+              "RelativeToolTip": "src\\app\\api\\orders\\[id]\\route.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-04-02T12:49:53.535Z",
+              "WhenOpened": "2026-04-04T15:21:45.993Z",
+              "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "route.ts",
-              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\artworks\\route.ts",
-              "RelativeDocumentMoniker": "src\\app\\api\\artworks\\route.ts",
-              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\artworks\\route.ts",
-              "RelativeToolTip": "src\\app\\api\\artworks\\route.ts",
-              "ViewState": "AgIAACAAAAAAAAAAAAAAwDMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-04-02T12:49:33.213Z",
+              "DocumentIndex": 0,
+              "Title": "wrangler.toml",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\wrangler.toml",
+              "RelativeDocumentMoniker": "wrangler.toml",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\wrangler.toml",
+              "RelativeToolTip": "wrangler.toml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-04-04T15:51:40.913Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "page.tsx",
-              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\page.tsx",
-              "RelativeDocumentMoniker": "src\\app\\page.tsx",
-              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\page.tsx",
-              "RelativeToolTip": "src\\app\\page.tsx",
-              "ViewState": "AgIAAIoAAAAAAAAAAAAjwJQAAAArAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\checkout\\success\\page.tsx",
+              "RelativeDocumentMoniker": "src\\app\\checkout\\success\\page.tsx",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\checkout\\success\\page.tsx",
+              "RelativeToolTip": "src\\app\\checkout\\success\\page.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-04-01T21:44:51.304Z"
+              "WhenOpened": "2026-04-04T15:47:39.671Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "tailwind.config.ts",
-              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\tailwind.config.ts",
-              "RelativeDocumentMoniker": "tailwind.config.ts",
-              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\tailwind.config.ts",
-              "RelativeToolTip": "tailwind.config.ts",
-              "ViewState": "AgIAAC8AAAAAAAAAAAAAwDMAAAAbAAAAAAAAAA==",
+              "Title": "layout.tsx",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\admin\\layout.tsx",
+              "RelativeDocumentMoniker": "src\\app\\admin\\layout.tsx",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\admin\\layout.tsx",
+              "RelativeToolTip": "src\\app\\admin\\layout.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-04-01T21:44:18.061Z",
+              "WhenOpened": "2026-04-04T15:47:34.069Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "page.tsx",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\about\\page.tsx",
+              "RelativeDocumentMoniker": "src\\app\\about\\page.tsx",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\about\\page.tsx",
+              "RelativeToolTip": "src\\app\\about\\page.tsx",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T15:47:28.469Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "page.tsx",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\artwork\\[id]\\page.tsx",
+              "RelativeDocumentMoniker": "src\\app\\artwork\\[id]\\page.tsx",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\artwork\\[id]\\page.tsx",
+              "RelativeToolTip": "src\\app\\artwork\\[id]\\page.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T15:23:46.456Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "route.ts",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\upload\\route.ts",
+              "RelativeDocumentMoniker": "src\\app\\api\\upload\\route.ts",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\upload\\route.ts",
+              "RelativeToolTip": "src\\app\\api\\upload\\route.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T15:23:33.411Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "route.ts",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\route.ts",
+              "RelativeDocumentMoniker": "src\\app\\api\\orders\\route.ts",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\orders\\route.ts",
+              "RelativeToolTip": "src\\app\\api\\orders\\route.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T15:23:17.803Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "route.ts",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\admin\\login\\route.ts",
+              "RelativeDocumentMoniker": "src\\app\\api\\admin\\login\\route.ts",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\admin\\login\\route.ts",
+              "RelativeToolTip": "src\\app\\api\\admin\\login\\route.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T15:22:50.516Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "route.ts",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\clients\\route.ts",
+              "RelativeDocumentMoniker": "src\\app\\api\\clients\\route.ts",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\clients\\route.ts",
+              "RelativeToolTip": "src\\app\\api\\clients\\route.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T15:21:38.369Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "route.ts",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\artworks\\[id]\\route.ts",
+              "RelativeDocumentMoniker": "src\\app\\api\\artworks\\[id]\\route.ts",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\artworks\\[id]\\route.ts",
+              "RelativeToolTip": "src\\app\\api\\artworks\\[id]\\route.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T15:21:25.615Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "globals.css",
-              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\globals.css",
-              "RelativeDocumentMoniker": "src\\app\\globals.css",
-              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\globals.css",
-              "RelativeToolTip": "src\\app\\globals.css",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABIAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-04-01T21:43:45.876Z"
+              "Title": "route.ts",
+              "DocumentMoniker": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\artworks\\route.ts",
+              "RelativeDocumentMoniker": "src\\app\\api\\artworks\\route.ts",
+              "ToolTip": "C:\\Users\\DELL\\Downloads\\clintonart\\src\\app\\api\\artworks\\route.ts",
+              "RelativeToolTip": "src\\app\\api\\artworks\\route.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-04T15:21:18.182Z",
+              "EditorCaption": ""
             }
           ]
         }

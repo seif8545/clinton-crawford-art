@@ -60,3 +60,4 @@ next-env.d.ts
 .vs/clintonart.slnx/v18/DocumentLayout.json
 .vs/clintonart.slnx/v18/DocumentLayout.backup.json
 .vs/clintonart.slnx/v18/DocumentLayout.backup.json
+*.sqlite
