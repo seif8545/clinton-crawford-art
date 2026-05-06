@@ -307,7 +307,7 @@ export default function HomePage() {
             <p className="text-xs text-gold tracking-[0.4em] uppercase font-body mb-6">
               Acquire a Work
             </p>
-            <h2 className="font-display text-5xl md:text-7xl text-ink mb-6">Own a Crawford</h2>
+            <h2 className="font-display text-5xl md:text-7xl text-ink mb-6">Own an Original Crawford</h2>
             <p className="text-dusk/60 font-body max-w-xl mx-auto mb-10 leading-relaxed">
               Each painting is offered at price upon request. Tell the studio which work
               has caught your eye — pricing, framing, shipping and commissions are all handled
