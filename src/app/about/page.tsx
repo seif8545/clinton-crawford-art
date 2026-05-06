@@ -107,7 +107,7 @@ export default function AboutPage() {
                 <div className="space-y-4 text-ink/70 font-body leading-relaxed">
                   <p>
                     My early career was identified with landscapes and seascapes. I was born on the
-                    Atlantic coast of South America in a small country called Guyana — land of waters.
+                    Atlantic coast of South America in a small country called Guyana — land of many waters.
                     By my late 20s I migrated to the United States to pursue an undergraduate degree
                     in Communication and the Arts, which I completed successfully.
                   </p>
