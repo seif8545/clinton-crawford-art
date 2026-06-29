@@ -203,7 +203,7 @@ export default function InventoryPage() {
   const labelCls = 'block text-xs text-dusk/55 tracking-widest uppercase mb-2 font-body'
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div>
           <h1 className="font-display text-4xl text-ink mb-1">Paintings</h1>

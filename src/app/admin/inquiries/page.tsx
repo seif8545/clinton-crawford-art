@@ -60,7 +60,7 @@ export default function InquiriesPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="flex items-start justify-between mb-8 gap-4 flex-wrap">
         <div>
           <h1 className="font-display text-4xl text-ink mb-1">Inquiries</h1>

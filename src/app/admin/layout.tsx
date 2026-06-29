@@ -12,11 +12,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const isAuthenticated = session?.value === 'authenticated'
 
   return (
-    <div className="flex min-h-screen bg-parchment text-ink">
-      {/* Only show the admin navigation sidebar if they are actually logged in */}
+    <div className="flex flex-col md:flex-row min-h-screen bg-parchment text-ink">
+      {/* Only show the admin navigation if they are actually logged in.
+          Top bar on mobile, left sidebar on desktop. */}
       {isAuthenticated && <AdminNav />}
-      
-      <div className="flex-1 overflow-auto">
+
+      <div className="flex-1 min-w-0 overflow-auto">
         {children}
       </div>
     </div>
