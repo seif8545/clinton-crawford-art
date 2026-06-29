@@ -66,6 +66,9 @@ export async function POST(request: NextRequest) {
       featured: body.featured ? 1 : 0,
       sort_order: body.sort_order ?? id,
       image: body.image.trim(),
+      images: Array.isArray(body.images)
+        ? body.images.map(s => String(s).trim()).filter(Boolean)
+        : [],
     }
 
     const saved = await upsertPainting(painting)

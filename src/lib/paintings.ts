@@ -24,7 +24,10 @@ export interface Painting {
   status: PaintingStatus
   featured: 0 | 1
   sort_order: number
+  /** primary image shown in listings and as the first detail image */
   image: string
+  /** extra detail images (closeups, alternate angles) shown after the main one */
+  images?: string[]
 }
 
 const SEED_PAINTINGS: Painting[] = (seedData as { paintings: Painting[] }).paintings

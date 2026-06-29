@@ -39,6 +39,7 @@ interface Row {
   featured: number
   sort_order: number
   image: string
+  images: string[] | null
 }
 
 function rowToPainting(r: Row): Painting {
@@ -57,6 +58,7 @@ function rowToPainting(r: Row): Painting {
     featured: r.featured ? 1 : 0,
     sort_order: Number(r.sort_order) || 0,
     image: r.image,
+    images: Array.isArray(r.images) ? r.images.filter(Boolean) : [],
   }
 }
 
@@ -76,6 +78,7 @@ function paintingToRow(p: Painting): Row {
     featured: p.featured ? 1 : 0,
     sort_order: p.sort_order,
     image: p.image,
+    images: p.images ?? [],
   }
 }
 

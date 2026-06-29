@@ -6,6 +6,7 @@ import { getPaintings } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import InquireButton from '@/components/InquireButton'
+import ArtworkGallery from '@/components/ArtworkGallery'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -52,25 +53,11 @@ export default async function ArtworkPage({ params }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
 
             {/* Image panel */}
-            <div className="space-y-4">
-              <div className="relative aspect-[4/5] overflow-hidden bg-vellum border border-whisper shadow-card group">
-                <Image
-                  src={painting.image}
-                  alt={painting.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-                {painting.status === 'sold' && (
-                  <div className="absolute inset-0 bg-parchment/60 flex items-center justify-center">
-                    <span className="font-display text-4xl text-dusk/60 tracking-widest uppercase rotate-[-15deg]">
-                      Sold
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
+            <ArtworkGallery
+              images={[painting.image, ...(painting.images ?? [])]}
+              title={painting.title}
+              sold={painting.status === 'sold'}
+            />
 
             {/* Info panel */}
             <div className="flex flex-col">

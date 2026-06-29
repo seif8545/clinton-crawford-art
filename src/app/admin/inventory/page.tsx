@@ -35,6 +35,7 @@ interface FormState {
   status: PaintingStatus
   featured: boolean
   image: string
+  images: string[]
 }
 
 const EMPTY: FormState = {
@@ -51,6 +52,7 @@ const EMPTY: FormState = {
   status: 'available',
   featured: false,
   image: '',
+  images: [],
 }
 
 export default function InventoryPage() {
@@ -61,8 +63,10 @@ export default function InventoryPage() {
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
   const [busyImage, setBusyImage] = useState(false)
+  const [busyExtra, setBusyExtra] = useState(false)
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const extraInputRef = useRef<HTMLInputElement>(null)
 
   async function loadPaintings() {
     setLoading(true)
@@ -111,6 +115,7 @@ export default function InventoryPage() {
       status: p.status,
       featured: !!p.featured,
       image: p.image,
+      images: p.images ?? [],
     })
     setErr('')
     setShowForm(true)
@@ -142,6 +147,7 @@ export default function InventoryPage() {
         price_label: form.price_label.trim() || null,
         status: form.status,
         featured: form.featured ? 1 : 0,
+        images: form.images.map(s => s.trim()).filter(Boolean),
       }
 
       const res = await fetch('/api/artworks', {
@@ -196,6 +202,42 @@ export default function InventoryPage() {
     } finally {
       setBusyImage(false)
       e.target.value = ''
+    }
+  }
+
+  async function handleExtraImageFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? [])
+    if (!files.length) return
+    setBusyExtra(true)
+    setErr('')
+    try {
+      const uploaded: string[] = []
+      for (const file of files) {
+        const fd = new FormData()
+        fd.append('file', file)
+        const res = await fetch('/api/upload', { method: 'POST', body: fd })
+        const data = (await res.json()) as { url?: string; error?: string }
+        if (!res.ok || !data.url) throw new Error(data.error || 'Upload failed.')
+        uploaded.push(data.url)
+      }
+      setForm(f => ({ ...f, images: [...f.images, ...uploaded] }))
+      flash(`Added ${uploaded.length} image${uploaded.length === 1 ? '' : 's'}.`)
+    } catch (e2) {
+      setErr(e2 instanceof Error ? e2.message : 'Could not upload the image(s).')
+    } finally {
+      setBusyExtra(false)
+      e.target.value = ''
+    }
+  }
+
+  function removeExtraImage(idx: number) {
+    setForm(f => ({ ...f, images: f.images.filter((_, i) => i !== idx) }))
+  }
+
+  function addExtraImageUrl() {
+    const url = window.prompt('Paste an image URL to add as an extra image:')
+    if (url && url.trim()) {
+      setForm(f => ({ ...f, images: [...f.images, url.trim()] }))
     }
   }
 
@@ -350,10 +392,56 @@ export default function InventoryPage() {
                   </div>
                 )}
               </div>
+
+              <div className="md:col-span-2">
+                <label className={labelCls}>Additional Images — closeups, angles, details</label>
+                <div className="flex flex-wrap gap-3">
+                  {form.images.map((src, i) => (
+                    <div
+                      key={`${src}-${i}`}
+                      className="relative w-24 aspect-[3/4] border border-whisper bg-vellum overflow-hidden group"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt={`extra ${i + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeExtraImage(i)}
+                        className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center bg-ink/70 text-parchment text-xs hover:bg-blush transition-colors"
+                        aria-label="Remove image"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => extraInputRef.current?.click()}
+                    disabled={busyExtra}
+                    className="w-24 aspect-[3/4] border border-dashed border-whisper hover:border-gold/40 text-dusk/50 hover:text-gold text-xs font-body flex flex-col items-center justify-center gap-1 transition-colors disabled:opacity-50"
+                  >
+                    {busyExtra ? 'Uploading…' : <><span className="text-xl leading-none">+</span><span>Add</span></>}
+                  </button>
+                </div>
+                <input
+                  ref={extraInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handleExtraImageFiles}
+                />
+                <p className="text-xs text-dusk/45 mt-2 font-body">
+                  Upload one or more files (you can select several at once), or{' '}
+                  <button type="button" onClick={addExtraImageUrl} className="text-gold underline hover:text-ink">
+                    add by URL
+                  </button>
+                  . These appear after the main image on the painting&rsquo;s page.
+                </p>
+              </div>
             </div>
 
             <div className="flex gap-3 mt-8">
-              <button onClick={handleSave} disabled={saving || busyImage} className="btn-portal disabled:opacity-50">
+              <button onClick={handleSave} disabled={saving || busyImage || busyExtra} className="btn-portal disabled:opacity-50">
                 {saving ? 'Publishing…' : form.id ? 'Save & Publish' : 'Add & Publish'}
               </button>
               <button onClick={() => setShowForm(false)} className="btn-ghost">Cancel</button>
