@@ -34,8 +34,8 @@ export default function InquireForm() {
 
   useEffect(() => {
     fetch('/api/artworks', { cache: 'no-store' })
-      .then(r => r.json())
-      .then((d: { artworks?: Painting[] }) => setPaintings(d.artworks ?? []))
+      .then(r => r.json() as Promise<{ artworks?: Painting[] }>)
+      .then(d => setPaintings(d.artworks ?? []))
       .catch(() => setPaintings([]))
   }, [])
 
