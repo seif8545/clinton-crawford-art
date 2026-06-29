@@ -2,7 +2,7 @@
 // src/app/admin/page.tsx
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { getLivePaintings, type Painting } from '@/lib/paintings'
+import { type Painting } from '@/lib/paintings'
 
 export const runtime = 'edge'
 
@@ -21,7 +21,10 @@ export default function AdminDashboard() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
 
   useEffect(() => {
-    setPaintings(getLivePaintings())
+    fetch('/api/artworks', { cache: 'no-store' })
+      .then(r => r.json())
+      .then((d: { artworks?: Painting[] }) => setPaintings(d.artworks ?? []))
+      .catch(() => setPaintings([]))
     try {
       const raw = window.localStorage.getItem('art-crawford-inquiries-v1')
       setInquiries(raw ? (JSON.parse(raw) as Inquiry[]) : [])
@@ -124,9 +127,10 @@ export default function AdminDashboard() {
             <div className="p-4 border border-gold/15 bg-gold/5 mt-4">
               <p className="text-[10px] uppercase tracking-[0.2em] text-gold mb-1 font-body">How publishing works</p>
               <p className="text-xs text-dusk/65 font-body leading-relaxed">
-                Edits are stored in your browser. Use{' '}
-                <span className="text-gold">Export JSON</span> on the Paintings page and replace
-                <code className="px-1"> src/data/paintings.json</code> in the repo to ship them live.
+                Edits publish instantly. On the{' '}
+                <Link href="/admin/inventory" className="text-gold underline">Paintings</Link> page,
+                change the text, upload a new image, or rename a work, then press Save — it&rsquo;s
+                live on the site right away.
               </p>
             </div>
           </div>

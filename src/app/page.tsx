@@ -3,12 +3,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { getSeedPaintings } from '@/lib/paintings'
+import { getPaintings } from '@/lib/supabase'
 
 export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
-export default function HomePage() {
-  const all = getSeedPaintings()
+export default async function HomePage() {
+  const all = await getPaintings()
   const featured = all.filter(p => p.featured).slice(0, 8)
   const heroPainting = featured[0] ?? all[0]
   const stripPaintings = all.slice(0, 12)

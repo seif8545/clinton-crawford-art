@@ -4,7 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { getSeedPaintings, uniqueSeries, priceDisplay } from '@/lib/paintings'
+import { uniqueSeries, priceDisplay } from '@/lib/paintings'
+import { getPaintings } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'edge'
@@ -24,7 +25,7 @@ export default async function GalleryPage({ searchParams }: Props) {
   const activeStatus = status ?? 'all'
   const activeSeries = series ?? 'all'
 
-  const all = getSeedPaintings()
+  const all = await getPaintings()
   let paintings = [...all]
 
   if (activeStatus !== 'all') {

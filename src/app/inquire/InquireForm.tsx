@@ -2,11 +2,7 @@
 // src/app/inquire/InquireForm.tsx
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import {
-  getLivePaintings,
-  type Painting,
-  priceDisplay,
-} from '@/lib/paintings'
+import { type Painting, priceDisplay } from '@/lib/paintings'
 
 const INQUIRY_EMAIL = 'info@artcrawford.com'
 
@@ -37,7 +33,10 @@ export default function InquireForm() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    setPaintings(getLivePaintings())
+    fetch('/api/artworks', { cache: 'no-store' })
+      .then(r => r.json())
+      .then((d: { artworks?: Painting[] }) => setPaintings(d.artworks ?? []))
+      .catch(() => setPaintings([]))
   }, [])
 
   const selected = useMemo(

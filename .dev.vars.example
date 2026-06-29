@@ -3,5 +3,9 @@
 # Copy this file to .dev.vars and fill in your values.
 
 ADMIN_PASSWORD=your-secure-admin-password-here
-ADMIN_SECRET_KEY=your-random-32-char-secret-here
-R2_PUBLIC_URL=https://pub-YOURHASH.r2.dev
+
+# Supabase — the URL and anon key are also in wrangler.toml (public).
+# The service-role key is a SECRET and powers publishing (saving/deleting
+# paintings and uploading images). Copy it from the Supabase dashboard:
+# Project Settings → API → Project API keys → service_role → Reveal/Copy
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key-here

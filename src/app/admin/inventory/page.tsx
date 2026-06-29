@@ -1,12 +1,12 @@
 'use client'
 // src/app/admin/inventory/page.tsx
+//
+// Simple, direct publishing. Every Save or Delete writes straight to the live
+// site (Supabase) — no JSON export/import, no localStorage. Change the text,
+// upload a new image, or rename a work, hit Save, and it's published.
 import { useEffect, useRef, useState } from 'react'
 import {
-  getLivePaintings,
-  saveLivePaintings,
-  resetLivePaintings,
   autoSlug,
-  nextId,
   priceDisplay,
   type Painting,
   type PaintingStatus,
@@ -59,20 +59,40 @@ export default function InventoryPage() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState<FormState>({ ...EMPTY })
   const [msg, setMsg] = useState('')
+  const [err, setErr] = useState('')
   const [busyImage, setBusyImage] = useState(false)
+  const [saving, setSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  async function loadPaintings() {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/artworks', { cache: 'no-store' })
+      const data = (await res.json()) as { artworks?: Painting[] }
+      setPaintings(data.artworks ?? [])
+    } catch {
+      setErr('Could not load paintings. Check your connection and refresh.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    setPaintings(getLivePaintings())
-    setLoading(false)
+    loadPaintings()
   }, [])
 
   function set<K extends keyof FormState>(k: K, v: FormState[K]) {
     setForm(f => ({ ...f, [k]: v }))
   }
 
+  function flash(message: string) {
+    setMsg(message)
+    setErr('')
+  }
+
   function openCreate() {
     setForm({ ...EMPTY })
+    setErr('')
     setShowForm(true)
   }
 
@@ -92,114 +112,87 @@ export default function InventoryPage() {
       featured: !!p.featured,
       image: p.image,
     })
+    setErr('')
     setShowForm(true)
   }
 
-  function persist(next: Painting[]) {
-    setPaintings(next)
-    saveLivePaintings(next)
-  }
-
-  function handleSave() {
+  async function handleSave() {
     if (!form.title.trim()) {
-      setMsg('Title is required.')
+      setErr('Title is required.')
       return
     }
     if (!form.image.trim()) {
-      setMsg('Please upload or paste an image URL for the painting.')
+      setErr('Please upload an image (or paste an image URL) for the painting.')
       return
     }
 
-    const slug = (form.slug.trim() || autoSlug(form.title)).trim()
-    const next: Painting = {
-      id: form.id ?? nextId(paintings),
-      slug,
-      title: form.title.trim(),
-      year: form.year ? parseInt(form.year, 10) : null,
-      medium: form.medium.trim() || 'Acrylic on Canvas',
-      dimensions: form.dimensions.trim(),
-      description: form.description.trim() || null,
-      series: form.series.trim() || null,
-      price: form.price ? parseFloat(form.price) : 0,
-      price_label: form.price_label.trim() || null,
-      status: form.status,
-      featured: form.featured ? 1 : 0,
-      sort_order: form.id ?? nextId(paintings),
-      image: form.image.trim(),
-    }
-
-    let updated: Painting[]
-    if (form.id) {
-      updated = paintings.map(p => (p.id === form.id ? next : p))
-    } else {
-      updated = [...paintings, next]
-    }
-    persist(updated)
-    setMsg(`Saved “${next.title}”.`)
-    setShowForm(false)
-  }
-
-  function handleDelete(p: Painting) {
-    if (!confirm(`Delete "${p.title}"? This only affects your local browser.`)) return
-    persist(paintings.filter(x => x.id !== p.id))
-    setMsg(`Removed “${p.title}”.`)
-  }
-
-  function handleResetSeed() {
-    if (!confirm('Reset to the original 31 paintings? Your local edits will be lost.')) return
-    resetLivePaintings()
-    setPaintings(getLivePaintings())
-    setMsg('Reset to original paintings.')
-  }
-
-  function handleExport() {
-    const blob = new Blob([JSON.stringify({ paintings }, null, 2)], {
-      type: 'application/json',
-    })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'paintings.json'
-    a.click()
-    URL.revokeObjectURL(url)
-    setMsg('Exported paintings.json — replace src/data/paintings.json to publish.')
-  }
-
-  function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(String(reader.result)) as { paintings?: Painting[] } | Painting[]
-        const list = Array.isArray(parsed) ? parsed : parsed.paintings
-        if (!Array.isArray(list)) throw new Error()
-        persist(list)
-        setMsg(`Imported ${list.length} paintings.`)
-      } catch {
-        setMsg('Could not parse JSON file.')
+    setSaving(true)
+    setErr('')
+    try {
+      const payload = {
+        id: form.id ?? undefined,
+        title: form.title.trim(),
+        slug: form.slug.trim() || autoSlug(form.title),
+        year: form.year ? parseInt(form.year, 10) : null,
+        medium: form.medium.trim() || 'Acrylic on Canvas',
+        dimensions: form.dimensions.trim(),
+        description: form.description.trim() || null,
+        series: form.series.trim() || null,
+        price: form.price ? parseFloat(form.price) : 0,
+        price_label: form.price_label.trim() || null,
+        status: form.status,
+        featured: form.featured ? 1 : 0,
       }
+
+      const res = await fetch('/api/artworks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, image: form.image.trim() }),
+      })
+      const data = (await res.json()) as { artwork?: Painting; error?: string }
+      if (!res.ok || !data.artwork) {
+        throw new Error(data.error || 'Save failed.')
+      }
+
+      await loadPaintings()
+      flash(`Published “${data.artwork.title}” — it's live now.`)
+      setShowForm(false)
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Save failed.')
+    } finally {
+      setSaving(false)
     }
-    reader.readAsText(file)
-    e.target.value = ''
+  }
+
+  async function handleDelete(p: Painting) {
+    if (!confirm(`Delete "${p.title}" from the live site? This cannot be undone.`)) return
+    setErr('')
+    try {
+      const res = await fetch(`/api/artworks/${p.id}`, { method: 'DELETE' })
+      const data = (await res.json().catch(() => ({}))) as { error?: string }
+      if (!res.ok) throw new Error(data.error || 'Delete failed.')
+      await loadPaintings()
+      flash(`Removed “${p.title}” from the live site.`)
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Delete failed.')
+    }
   }
 
   async function handleImageFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setBusyImage(true)
+    setErr('')
     try {
-      // Read as data URL — works on Cloudflare edge, no upload server needed.
-      const dataUrl: string = await new Promise((resolve, reject) => {
-        const r = new FileReader()
-        r.onload = () => resolve(String(r.result))
-        r.onerror = reject
-        r.readAsDataURL(file)
-      })
-      set('image', dataUrl)
-      setMsg(`Loaded image (${(file.size / 1024).toFixed(0)} KB).`)
-    } catch {
-      setMsg('Could not read the image file.')
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      const data = (await res.json()) as { url?: string; error?: string }
+      if (!res.ok || !data.url) throw new Error(data.error || 'Upload failed.')
+      set('image', data.url)
+      flash('Image uploaded.')
+    } catch (e2) {
+      setErr(e2 instanceof Error ? e2.message : 'Could not upload the image.')
     } finally {
       setBusyImage(false)
       e.target.value = ''
@@ -214,40 +207,20 @@ export default function InventoryPage() {
       <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div>
           <h1 className="font-display text-4xl text-ink mb-1">Paintings</h1>
-          <p className="text-sm text-dusk/55 font-body">{paintings.length} works in your local catalogue</p>
+          <p className="text-sm text-dusk/55 font-body">{paintings.length} works on your live site</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button onClick={openCreate} className="btn-portal">+ Add Painting</button>
-          <button
-            onClick={handleExport}
-            className="text-xs text-dusk/65 hover:text-ink px-4 py-2 border border-whisper hover:border-gold/30 transition-colors uppercase tracking-widest font-body"
-          >
-            Export JSON
-          </button>
-          <label className="text-xs text-dusk/65 hover:text-ink px-4 py-2 border border-whisper hover:border-gold/30 transition-colors uppercase tracking-widest font-body cursor-pointer">
-            Import JSON
-            <input type="file" accept="application/json" onChange={handleImport} className="hidden" />
-          </label>
-          <button
-            onClick={handleResetSeed}
-            className="text-xs text-dusk/65 hover:text-blush px-4 py-2 border border-whisper hover:border-blush/30 transition-colors uppercase tracking-widest font-body"
-          >
-            Reset to Seed
-          </button>
         </div>
       </div>
 
       <div className="border border-gold/15 bg-gold/5 px-5 py-4 mb-6 text-xs text-dusk/65 font-body leading-relaxed">
-        Edits are saved to your browser&rsquo;s local storage so you can preview changes immediately.
-        To publish them on the live site, click <span className="text-gold">Export JSON</span>{' '}
-        and replace <code>src/data/paintings.json</code> in the repo, then re-deploy.
+        Every change publishes instantly. Edit the text, upload a new image, or rename a work,
+        then press <span className="text-gold">Save</span> — it goes live on the site right away.
       </div>
 
-      {msg && (
-        <p className={`mb-4 text-sm font-body ${msg.toLowerCase().includes('could not') || msg.toLowerCase().includes('required') ? 'text-blush' : 'text-gold'}`}>
-          {msg}
-        </p>
-      )}
+      {msg && <p className="mb-4 text-sm font-body text-gold">{msg}</p>}
+      {err && <p className="mb-4 text-sm font-body text-blush">{err}</p>}
 
       {/* Form modal */}
       {showForm && (
@@ -345,10 +318,10 @@ export default function InventoryPage() {
                 <label className={labelCls}>Image</label>
                 <div className="flex flex-col md:flex-row gap-3 items-stretch">
                   <input
-                    value={form.image.startsWith('data:') ? '(uploaded image)' : form.image}
+                    value={form.image}
                     onChange={e => set('image', e.target.value)}
                     className={inputCls}
-                    placeholder="/images/painting-1.jpeg or https://..."
+                    placeholder="Upload a file, or paste an image URL"
                   />
                   <button
                     type="button"
@@ -356,7 +329,7 @@ export default function InventoryPage() {
                     className="text-xs text-dusk/65 hover:text-ink px-4 py-2 border border-whisper hover:border-gold/30 transition-colors uppercase tracking-widest font-body whitespace-nowrap"
                     disabled={busyImage}
                   >
-                    {busyImage ? 'Reading…' : 'Upload File'}
+                    {busyImage ? 'Uploading…' : 'Upload File'}
                   </button>
                   <input
                     ref={fileInputRef}
@@ -367,8 +340,8 @@ export default function InventoryPage() {
                   />
                 </div>
                 <p className="text-xs text-dusk/45 mt-2 font-body">
-                  You can paste a path under <code>/images/</code>, paste any public URL, or upload a
-                  file directly — the file is embedded in your local catalogue.
+                  Choose a file from your computer — it&rsquo;s uploaded and hosted automatically,
+                  then shown on the live site.
                 </p>
                 {form.image && (
                   <div className="mt-3 w-32 aspect-[3/4] border border-whisper bg-vellum overflow-hidden">
@@ -380,8 +353,8 @@ export default function InventoryPage() {
             </div>
 
             <div className="flex gap-3 mt-8">
-              <button onClick={handleSave} className="btn-portal">
-                {form.id ? 'Save Changes' : 'Add Painting'}
+              <button onClick={handleSave} disabled={saving || busyImage} className="btn-portal disabled:opacity-50">
+                {saving ? 'Publishing…' : form.id ? 'Save & Publish' : 'Add & Publish'}
               </button>
               <button onClick={() => setShowForm(false)} className="btn-ghost">Cancel</button>
             </div>

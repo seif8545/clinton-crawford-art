@@ -1,9 +1,15 @@
 // src/app/api/artworks/[id]/route.ts
+//
+// GET    — public read of a single painting by id or slug.
+// DELETE — admin only: remove a painting. Publishes instantly.
+
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getSeedPaintings, findById, findBySlug } from '@/lib/paintings'
+import { getPaintings, deletePainting } from '@/lib/supabase'
+import { findById, findBySlug } from '@/lib/paintings'
+import { isAdmin } from '@/lib/admin-auth'
 
 export async function GET(
   _: NextRequest,
@@ -11,7 +17,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const list = getSeedPaintings()
+    const list = await getPaintings()
     const numeric = Number.parseInt(id, 10)
     const painting = Number.isFinite(numeric)
       ? findById(list, numeric) ?? findBySlug(list, id)
@@ -23,16 +29,24 @@ export async function GET(
   }
 }
 
-export async function PATCH() {
-  return NextResponse.json(
-    { error: 'Edit paintings from /admin/inventory and re-publish src/data/paintings.json.' },
-    { status: 405 }
-  )
-}
-
-export async function DELETE() {
-  return NextResponse.json(
-    { error: 'Edit paintings from /admin/inventory and re-publish src/data/paintings.json.' },
-    { status: 405 }
-  )
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
+  }
+  try {
+    const { id } = await params
+    const numeric = Number.parseInt(id, 10)
+    if (!Number.isFinite(numeric)) {
+      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    }
+    await deletePainting(numeric)
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('DELETE artwork error:', error)
+    const message = error instanceof Error ? error.message : 'Failed to delete painting'
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }

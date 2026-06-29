@@ -1,9 +1,8 @@
 // src/lib/paintings.ts
 //
-// Single source of truth for the gallery's listings.
-// The seed data is statically imported so it works on the Cloudflare edge runtime.
-// On the client (admin), localStorage edits are layered on top of the seed
-// so the painter can manage listings without a backend.
+// Painting type + helpers. The live catalogue is stored in Supabase
+// (see src/lib/supabase.ts); the bundled seed below is used only as a
+// fallback if Supabase is unreachable, so the site never renders empty.
 
 import seedData from '@/data/paintings.json'
 
@@ -30,41 +29,12 @@ export interface Painting {
 
 const SEED_PAINTINGS: Painting[] = (seedData as { paintings: Painting[] }).paintings
 
-const STORAGE_KEY = 'art-crawford-paintings-v1'
-
 /**
- * Returns the seed paintings shipped with the bundle. Used by all server
- * components — these run on the edge and cannot read localStorage.
+ * Returns the seed paintings shipped with the bundle. Used only as a fallback
+ * by the Supabase data layer when the live store is unreachable.
  */
 export function getSeedPaintings(): Painting[] {
   return [...SEED_PAINTINGS].sort((a, b) => a.sort_order - b.sort_order)
-}
-
-/**
- * Returns paintings the painter (admin) has saved locally, or the seed if none.
- * Only safe to call from a client component / inside useEffect.
- */
-export function getLivePaintings(): Painting[] {
-  if (typeof window === 'undefined') return getSeedPaintings()
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw) return getSeedPaintings()
-    const parsed = JSON.parse(raw) as Painting[]
-    if (!Array.isArray(parsed) || parsed.length === 0) return getSeedPaintings()
-    return [...parsed].sort((a, b) => a.sort_order - b.sort_order)
-  } catch {
-    return getSeedPaintings()
-  }
-}
-
-export function saveLivePaintings(paintings: Painting[]): void {
-  if (typeof window === 'undefined') return
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(paintings))
-}
-
-export function resetLivePaintings(): void {
-  if (typeof window === 'undefined') return
-  window.localStorage.removeItem(STORAGE_KEY)
 }
 
 export function findBySlug(paintings: Painting[], slug: string): Painting | null {

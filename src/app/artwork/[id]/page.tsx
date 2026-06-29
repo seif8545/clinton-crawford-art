@@ -1,11 +1,8 @@
 // src/app/artwork/[id]/page.tsx
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import {
-  getSeedPaintings,
-  findBySlug,
-  priceDisplay,
-} from '@/lib/paintings'
+import { findBySlug, priceDisplay } from '@/lib/paintings'
+import { getPaintings } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import InquireButton from '@/components/InquireButton'
@@ -21,7 +18,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
-  const painting = findBySlug(getSeedPaintings(), id)
+  const painting = findBySlug(await getPaintings(), id)
   if (!painting) return { title: 'Painting Not Found' }
   return {
     title: painting.title,
@@ -31,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArtworkPage({ params }: Props) {
   const { id } = await params
-  const all = getSeedPaintings()
+  const all = await getPaintings()
   const painting = findBySlug(all, id)
   if (!painting) notFound()
 
