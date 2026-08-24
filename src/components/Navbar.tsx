@@ -3,11 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { useCartStore } from '@/components/CartProvider'
 
 export default function Navbar() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const cartCount = useCartStore(s => s.count())
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -47,12 +49,30 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <Link href="/cart" className="relative text-ink/60 hover:text-gold transition-colors" aria-label="Cart">
+            <CartIcon />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-gold text-parchment text-[10px] leading-4 text-center font-body">
+                {cartCount}
+              </span>
+            )}
+          </Link>
         </div>
 
-        <button className="md:hidden text-ink/60 hover:text-gold transition-colors"
-          onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
-          {menuOpen ? <CloseIcon /> : <MenuIcon />}
-        </button>
+        <div className="flex items-center gap-5 md:hidden">
+          <Link href="/cart" className="relative text-ink/60 hover:text-gold transition-colors" aria-label="Cart">
+            <CartIcon />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-gold text-parchment text-[10px] leading-4 text-center font-body">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          <button className="text-ink/60 hover:text-gold transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+            {menuOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
+        </div>
       </nav>
 
       {menuOpen && (
@@ -64,9 +84,22 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <Link href="/cart"
+            className="font-display text-2xl text-ink/80 hover:text-gold transition-colors"
+            onClick={() => setMenuOpen(false)}>
+            Cart{cartCount > 0 ? ` (${cartCount})` : ''}
+          </Link>
         </div>
       )}
     </header>
+  )
+}
+
+function CartIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 6h15l-1.5 9h-12z" /><path d="M6 6l-1-3H2" /><circle cx="9.5" cy="19.5" r="1" /><circle cx="17.5" cy="19.5" r="1" />
+    </svg>
   )
 }
 

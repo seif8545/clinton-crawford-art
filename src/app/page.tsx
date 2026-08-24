@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { getPaintings } from '@/lib/supabase'
+import { printsFromLabel } from '@/lib/paintings'
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
@@ -19,92 +20,44 @@ export default async function HomePage() {
       <Navbar />
       <main>
 
-        {/* ── HERO ──────────────────────────────────────────────────────── */}
-        <section className="relative min-h-screen flex items-center overflow-hidden bg-parchment">
-          {/* Hero image */}
+        {/* ── HERO — artwork first, then generous whitespace for text ─────── */}
+        <section className="bg-parchment">
           {heroPainting && (
-            <Image
-              src={heroPainting.image}
-              alt={heroPainting.title}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover lg:object-right"
-            />
-          )}
-          
-          {/* Gradient veil: Solid on the text side, fading out to reveal the painting */}
-          <div className="absolute inset-0 bg-gradient-to-b from-parchment via-parchment/95 to-transparent lg:bg-gradient-to-r lg:from-parchment lg:via-parchment/80 lg:to-transparent" />
-          
-          {/* Subtle atmospheric color blooms */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(ellipse at 25% 35%, rgba(184,168,204,0.18) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, rgba(143,174,200,0.18) 0%, transparent 55%)',
-            }}
-          />
-
-          <div className="relative z-10 w-full max-w-6xl mx-auto px-6 py-32 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-7">
-              <p className="font-body text-xs tracking-[0.45em] uppercase text-dusk/55 mb-6">
-                Original Paintings · Dr. Clinton Crawford · Guyana / United States
-              </p>
-              <h1
-                className="font-display text-ink mb-6 leading-[0.88]"
-                style={{ fontSize: 'clamp(4rem, 11vw, 9rem)' }}
-              >
-                Art<br />
-                <span className="text-gold-shimmer">Crawford</span>
-              </h1>
-              <div className="flex items-center gap-5 mb-8">
-                <div className="h-px bg-gold/40 w-20" />
-                <p className="font-display text-xl md:text-2xl text-dusk/75 italic tracking-wide">
-                  A painter&rsquo;s record of the threshold between waking and dream.
-                </p>
-              </div>
-              <p className="font-body text-base md:text-lg text-dusk/70 max-w-xl mb-10 leading-relaxed">
-                The painting practice of Dr. Clinton Crawford — magical realism in
-                acrylic and oil on canvas. Sky and water are interchangeable, land
-                belongs to imagined geographies, and the viewer is invited to step
-                through.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/gallery" className="btn-portal">View the Gallery</Link>
-                <Link href="/inquire" className="btn-ghost">Buy / Inquire</Link>
-              </div>
+            <div className="relative w-full h-[58vh] min-h-[420px] max-h-[640px] bg-whisper">
+              <Image
+                src={heroPainting.image}
+                alt={heroPainting.title}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover"
+              />
             </div>
+          )}
 
-            {/* Floating mini-feature card */}
-            {heroPainting && (
-              <div className="lg:col-span-5">
-                <Link
-                  href={`/artwork/${heroPainting.slug}`}
-                  className="group block glass-card overflow-hidden"
-                >
-                  <div className="relative aspect-[4/5] overflow-hidden">
-                    <Image
-                      src={heroPainting.image}
-                      alt={heroPainting.title}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 40vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-5 border-t border-whisper">
-                    <p className="text-xs text-gold tracking-[0.25em] uppercase font-body mb-1">
-                      Featured · {heroPainting.series ?? 'Originals'}
-                    </p>
-                    <p className="font-display text-2xl text-ink group-hover:text-gold transition-colors leading-tight">
-                      {heroPainting.title}
-                    </p>
-                    <p className="text-xs text-dusk/55 font-body mt-1">
-                      {heroPainting.medium} · {heroPainting.dimensions}
-                    </p>
-                  </div>
-                </Link>
-              </div>
-            )}
+          <div className="max-w-3xl mx-auto px-6 pt-20 pb-28 text-center">
+            <p className="font-body text-xs tracking-[0.4em] uppercase text-dusk/55 mb-7">
+              Original Paintings · Dr. Clinton Crawford · Guyana / United States
+            </p>
+            <h1
+              className="font-display text-ink mb-6 leading-[0.9]"
+              style={{ fontSize: 'clamp(3.5rem, 9vw, 6.5rem)' }}
+            >
+              Art <span className="text-gold-shimmer">Crawford</span>
+            </h1>
+            <p className="font-display text-xl md:text-2xl text-dusk/75 italic tracking-wide mb-7">
+              A painter&rsquo;s record of the threshold between waking and dream.
+            </p>
+            <p className="font-body text-base md:text-lg text-dusk/70 max-w-xl mx-auto mb-10 leading-relaxed">
+              The painting practice of Dr. Clinton Crawford — magical realism in
+              acrylic and oil on canvas. Sky and water are interchangeable, land
+              belongs to imagined geographies, and the viewer is invited to step
+              through.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/gallery" className="btn-portal">View the Gallery</Link>
+              <Link href="/inquire" className="btn-ghost">Buy / Inquire</Link>
+            </div>
           </div>
         </section>
 
@@ -162,37 +115,30 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {featured.map((p, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+            {featured.slice(0, 6).map((p, i) => (
               <Link
                 key={p.id}
                 href={`/artwork/${p.slug}`}
-                className="group block bg-vellum border border-whisper overflow-hidden transition-all duration-500 hover:border-gold/30"
+                className="group block"
               >
-                <div className="relative aspect-[3/4] overflow-hidden">
+                <div className="relative aspect-[3/4] overflow-hidden bg-whisper">
                   <Image
                     src={p.image}
                     alt={p.title}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     priority={i < 3}
                   />
-                  <div className="absolute top-3 left-3">
-                    <span className="badge-available">Available</span>
-                  </div>
                 </div>
-                <div className="p-5 border-t border-whisper">
-                  <p className="font-display text-xl text-ink group-hover:text-gold transition-colors leading-tight line-clamp-2">
+                <div className="pt-5">
+                  <h3 className="font-display text-xl text-ink group-hover:text-gold transition-colors duration-200 leading-tight">
                     {p.title}
+                  </h3>
+                  <p className="text-xs text-dusk/45 font-body mt-1.5 tracking-wide">
+                    {printsFromLabel(p)}
                   </p>
-                  <p className="text-xs text-dusk/55 font-body mt-1">
-                    {p.medium} · {p.year ?? 'n.d.'}
-                  </p>
-                  <div className="flex items-center justify-between mt-3">
-                    <p className="text-xs text-dusk/45 font-body">{p.dimensions}</p>
-                    <p className="font-display text-base text-gold italic">Price upon request</p>
-                  </div>
                 </div>
               </Link>
             ))}

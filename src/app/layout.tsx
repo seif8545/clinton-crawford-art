@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next'
 import './globals.css'
+import { CartProvider } from '@/components/CartProvider'
 
 export const metadata: Metadata = {
   title: {
@@ -46,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}</style>
       </head>
       <body className="bg-parchment text-ink font-body antialiased">
-        {children}
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   )

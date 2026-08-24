@@ -1,12 +1,13 @@
 // src/app/artwork/[id]/page.tsx
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { findBySlug, priceDisplay } from '@/lib/paintings'
+import { findBySlug, priceDisplay, printOptionsFor } from '@/lib/paintings'
 import { getPaintings } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import InquireButton from '@/components/InquireButton'
 import ArtworkGallery from '@/components/ArtworkGallery'
+import PrintPurchase from '@/components/PrintPurchase'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -101,6 +102,10 @@ export default async function ArtworkPage({ params }: Props) {
                 </div>
               )}
 
+              <p className="text-xs text-dusk/40 tracking-[0.25em] uppercase font-body mb-3">
+                The Original
+              </p>
+
               {painting.status === 'available' && (
                 <div className="mb-6">
                   <p className="text-xs text-dusk/50 tracking-[0.2em] uppercase font-body mb-1">Price</p>
@@ -113,7 +118,7 @@ export default async function ArtworkPage({ params }: Props) {
 
               <div className="mb-8"><InquireButton painting={painting} /></div>
 
-              <div className="glass-card p-5 text-sm">
+              <div className="glass-card p-5 text-sm mb-10">
                 <p className="font-display text-lg text-gold mb-2">Acquire this work</p>
                 <p className="text-dusk/60 font-body text-sm mb-3">
                   Questions, framing, installment plans or international shipping?
@@ -125,6 +130,11 @@ export default async function ArtworkPage({ params }: Props) {
                   Send a private inquiry →
                 </Link>
               </div>
+
+              <p className="text-xs text-dusk/40 tracking-[0.25em] uppercase font-body mb-3">
+                Prints
+              </p>
+              <PrintPurchase painting={painting} options={printOptionsFor(painting)} />
             </div>
           </div>
         </div>

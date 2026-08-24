@@ -5,7 +5,13 @@
 // service-role key. The gallery falls back to the bundled seed catalogue if
 // Supabase is not configured, so the site never breaks.
 
-import { getSeedPaintings, type Painting, type PaintingStatus } from '@/lib/paintings'
+import {
+  getSeedPaintings,
+  type Painting,
+  type PaintingStatus,
+  type PrintOption,
+} from '@/lib/paintings'
+import type { PrintOrder } from '@/lib/orders'
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL ?? ''
@@ -15,6 +21,7 @@ const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
 
 const TABLE = 'paintings'
 const BUCKET = 'paintings'
+const ORDERS_TABLE = 'print_orders'
 
 export function supabaseReadReady(): boolean {
   return Boolean(SUPABASE_URL && READ_KEY)
@@ -40,6 +47,7 @@ interface Row {
   sort_order: number
   image: string
   images: string[] | null
+  print_options: PrintOption[] | null
 }
 
 function rowToPainting(r: Row): Painting {
@@ -59,6 +67,7 @@ function rowToPainting(r: Row): Painting {
     sort_order: Number(r.sort_order) || 0,
     image: r.image,
     images: Array.isArray(r.images) ? r.images.filter(Boolean) : [],
+    print_options: Array.isArray(r.print_options) ? r.print_options : [],
   }
 }
 
@@ -79,6 +88,7 @@ function paintingToRow(p: Painting): Row {
     sort_order: p.sort_order,
     image: p.image,
     images: p.images ?? [],
+    print_options: p.print_options ?? [],
   }
 }
 
@@ -180,4 +190,92 @@ export async function uploadImage(
     throw new Error(`Upload failed (${res.status}): ${await res.text()}`)
   }
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`
+}
+
+// ─── Print orders ───────────────────────────────────────────────────────
+//
+// Orders always read/write with the service-role key, never the public
+// anon key — unlike paintings, order rows carry customer names, emails
+// and shipping addresses, so they must never be reachable with a
+// client-exposed key. Run supabase-print-orders.sql once in the Supabase
+// SQL editor to create the table before this is used.
+//
+// If Supabase isn't configured, these no-op (return null / false / [])
+// rather than throwing — the order is still emailed to the studio via
+// /api/print-orders, so a checkout never fails just because the table
+// isn't set up yet. Set SUPABASE_SERVICE_ROLE_KEY to get durable,
+// cross-device order storage and the /admin/orders view.
+
+/** Insert a new print order. Returns the saved row, or null if Supabase isn't configured/reachable. */
+export async function createPrintOrder(order: PrintOrder): Promise<PrintOrder | null> {
+  if (!supabaseWriteReady()) return null
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${ORDERS_TABLE}`, {
+      method: 'POST',
+      headers: {
+        apikey: SERVICE_KEY,
+        Authorization: `Bearer ${SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation',
+      },
+      body: JSON.stringify([order]),
+    })
+    if (!res.ok) {
+      console.warn('createPrintOrder failed:', res.status, await res.text())
+      return null
+    }
+    const rows = (await res.json()) as PrintOrder[]
+    return rows[0] ?? null
+  } catch (err) {
+    console.warn('createPrintOrder threw:', err)
+    return null
+  }
+}
+
+/** All print orders, newest first. Admin-only — always uses the service key. */
+export async function getPrintOrders(): Promise<PrintOrder[]> {
+  if (!supabaseWriteReady()) return []
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${ORDERS_TABLE}?select=*&order=created_at.desc`,
+      {
+        headers: {
+          apikey: SERVICE_KEY,
+          Authorization: `Bearer ${SERVICE_KEY}`,
+        },
+        cache: 'no-store',
+      }
+    )
+    if (!res.ok) return []
+    const rows = (await res.json()) as PrintOrder[]
+    return Array.isArray(rows) ? rows : []
+  } catch {
+    return []
+  }
+}
+
+/** Advance an order's fulfillment status (pending → confirmed → in_production → shipped → delivered, or cancelled). */
+export async function updatePrintOrderStatus(
+  orderNumber: string,
+  status: PrintOrder['status']
+): Promise<boolean> {
+  if (!supabaseWriteReady()) return false
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${ORDERS_TABLE}?order_number=eq.${encodeURIComponent(orderNumber)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          apikey: SERVICE_KEY,
+          Authorization: `Bearer ${SERVICE_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal',
+        },
+        body: JSON.stringify({ status }),
+      }
+    )
+    return res.ok
+  } catch {
+    return false
+  }
 }

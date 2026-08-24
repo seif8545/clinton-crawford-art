@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { uniqueSeries, priceDisplay } from '@/lib/paintings'
+import { uniqueSeries, printsFromLabel } from '@/lib/paintings'
 import { getPaintings } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
@@ -113,51 +113,40 @@ export default async function GalleryPage({ searchParams }: Props) {
         {/* Grid */}
         <div className="max-w-7xl mx-auto px-6">
           {paintings.length > 0 ? (
-            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+            <div className="columns-1 sm:columns-2 xl:columns-3 gap-12 space-y-12">
               {paintings.map((p, i) => (
                 <div key={p.id} className="break-inside-avoid">
                   <Link href={`/artwork/${p.slug}`} className="group block" aria-label={`View ${p.title}`}>
-                    <article className="relative overflow-hidden bg-vellum border border-whisper transition-all duration-500 group-hover:border-gold/30">
+                    <article>
                       <div className="relative aspect-[3/4] overflow-hidden bg-whisper">
                         <Image
                           src={p.image}
                           alt={p.title}
                           fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                           className="object-cover transition-transform duration-700 group-hover:scale-105"
                           priority={i < 4}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="absolute top-3 left-3">
                           {p.status === 'available' && <span className="badge-available">Available</span>}
                           {p.status === 'sold' && <span className="badge-sold">Sold</span>}
                           {p.status === 'reserved' && <span className="badge-reserved">Reserved</span>}
                           {p.status === 'not_for_sale' && <span className="badge-sold">Not for sale</span>}
                         </div>
-                        {p.series && (
-                          <div className="absolute top-3 right-3">
-                            <span className="text-xs text-parchment/85 tracking-widest uppercase bg-ink/30 backdrop-blur-sm px-2 py-0.5">
-                              {p.series.split(' ').slice(-2).join(' ')}
-                            </span>
-                          </div>
-                        )}
                         <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
                           <span className="font-display text-parchment tracking-[0.2em] uppercase text-sm">
                             View Work →
                           </span>
                         </div>
                       </div>
-                      <div className="p-5 border-t border-whisper">
-                        <h3 className="font-display text-xl text-ink mb-1 group-hover:text-gold transition-colors duration-200 line-clamp-2 leading-tight">
+                      <div className="pt-5">
+                        <h3 className="font-display text-xl text-ink group-hover:text-gold transition-colors duration-200 leading-tight">
                           {p.title}
                         </h3>
-                        <p className="text-xs text-dusk/60 tracking-wide mb-3 font-body">
-                          {p.medium} · {p.year ?? 'n.d.'}
+                        <p className="text-xs text-dusk/45 font-body mt-1.5 tracking-wide">
+                          {printsFromLabel(p)}
                         </p>
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs text-dusk/45 font-body">{p.dimensions}</p>
-                          <p className="font-display text-base text-gold italic">{priceDisplay(p)}</p>
-                        </div>
                       </div>
                     </article>
                   </Link>
