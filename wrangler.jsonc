@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	"name": "art-crawford-gallery",
+	"name": "clinton-crawford-art",
 	"compatibility_date": "2026-08-25",
 	"compatibility_flags": [
 		"nodejs_compat",
