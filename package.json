@@ -3,25 +3,27 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
+    "dev": "next dev",
     "pages:build": "npx @cloudflare/next-on-pages",
-    "preview": "npm run pages:build && wrangler pages dev",
-    "deploy": "npm run pages:build && wrangler pages deploy",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "start": "next start",
     "lint": "next lint",
     "db:init:local": "wrangler d1 execute artist-db --local --file=schema.sql",
-    "db:init:remote": "wrangler d1 execute artist-db --file=schema.sql"
+    "db:init:remote": "wrangler d1 execute artist-db --file=schema.sql",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
-    "next": "^15.2.0",
+    "@opennextjs/cloudflare": "^1.20.2",
+    "next": "^16.3.2",
     "react": "^19",
     "react-dom": "^19",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.16",
-    "@cloudflare/workers-types": "^4.20240725.0",
+    "@cloudflare/workers-types": "^5.20260825.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -31,6 +33,6 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
-    "wrangler": "^4.80.0"
+    "wrangler": "^4.125.0"
   }
 }

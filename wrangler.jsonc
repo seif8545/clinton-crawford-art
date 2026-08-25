@@ -1,0 +1,33 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"main": ".open-next/worker.js",
+	"name": "art-crawford-gallery",
+	"compatibility_date": "2026-08-25",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],// ADD YOUR VARIABLES HERE:
+  "vars": {
+    "NEXT_PUBLIC_SITE_NAME": "Art Crawford",
+    "NEXT_PUBLIC_ARTIST_NAME": "Dr. Clinton Crawford",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://yxgpjjwjgtgavfusurbi.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4Z3BqandqZ3RnYXZmdXN1cmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MjM4MjcsImV4cCI6MjA5ODI5OTgyN30.uZumtx6kIdbbCuHUqlAviZrY1ps_edMTW1ZFLD16ouU"
+  },
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"services": [
+		{
+			// Self-reference service binding, the service name must match the worker name
+			// see https://opennext.js.org/cloudflare/caching
+			"binding": "WORKER_SELF_REFERENCE",
+			"service": "art-crawford-gallery"
+		}
+	],
+	"images": {
+		// Enable image optimization
+		// see https://opennext.js.org/cloudflare/howtos/image
+		"binding": "IMAGES"
+	}
+}
